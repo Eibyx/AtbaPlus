@@ -118,12 +118,22 @@ class _SettingsPageState extends State<SettingsPage> {
     };
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      appBar: AppBar(
+        toolbarHeight: 72,
+        title: Text(
+          'Settings',
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.w800,
+            letterSpacing: -0.6,
+          ),
+        ),
+      ),
       body: ListView(
+        padding: const EdgeInsets.fromLTRB(12, 0, 12, 24),
         children: [
           SimpleSettingsTile(
             title: 'Account',
-            leading: Icon(Icons.account_circle),
+            leading: Icon(Icons.account_circle_rounded),
             child: SettingsScreen(
               title: 'Account settings',
               children: <Widget>[
@@ -137,7 +147,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   controller: apiKeyController,
                   decoration: const InputDecoration(
                     labelText: 'API Key',
-                    border: OutlineInputBorder(),
                   ),
                   obscureText: true,
                   enableSuggestions: false,
@@ -173,7 +182,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
                 SimpleSettingsTile(
                   title: 'Delete API Key',
-                  leading: Icon(Icons.delete),
+                  leading: Icon(Icons.delete_rounded),
                   onTap: () async {
                     await apiService.deleteApiKey();
                     ScaffoldMessenger.of(
@@ -186,7 +195,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           SimpleSettingsTile(
             title: "Appearance",
-            leading: Icon(Icons.color_lens),
+            leading: Icon(Icons.palette_rounded),
             child: SettingsScreen(
               title: 'Appearance settings',
               children: <Widget>[
@@ -214,13 +223,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
 
                 CheckboxSettingsTile(
-                  settingKey: Constants.useMaterial3,
-                  title: 'Use Material3 theming',
-                  defaultValue: true,
-                ),
-                CheckboxSettingsTile(
                   settingKey: Constants.useTorboxFontFamily,
-                  title: 'Use torbox\'s dotted font',
+                  title: 'Use TorBox\'s dotted font',
+                  subtitle: 'Off = your device\'s system font',
                   defaultValue: false,
                 ),
               ],
@@ -228,13 +233,13 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           SimpleSettingsTile(
             title: "Integrations",
-            leading: Icon(Icons.integration_instructions),
+            leading: Icon(Icons.extension_rounded),
             child: SettingsScreen(
               title: "Integrations settings",
               children: <Widget>[
                 SimpleSettingsTile(
                   title: "Jobs status",
-                  leading: Icon(Icons.work),
+                  leading: Icon(Icons.cloud_sync_rounded),
                   child: JobsStatusPage(),
                 ),
                 GoogleDriveIntegrationSection(
@@ -252,7 +257,7 @@ class _SettingsPageState extends State<SettingsPage> {
           LibrarySettingsTile(),
           SimpleSettingsTile(
             title: "Storage",
-            leading: Icon(Icons.storage),
+            leading: Icon(Icons.folder_rounded),
             child: SettingsScreen(
               title: "Storage settings",
               children: <Widget>[
@@ -268,7 +273,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         ) {
                           return ListTile(
                             title: const Text("Storage location"),
-                            leading: Icon(Icons.storage),
+                            leading: Icon(Icons.folder_rounded),
                             onTap: () async {
                               // TODO: niceify with methods in permission model
                               PermissionModel permissionModel =
@@ -302,7 +307,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 ListTile(
                   title: const Text("Clear cache"),
-                  leading: Icon(Icons.delete),
+                  leading: Icon(Icons.delete_rounded),
                   onTap: () async {
                     await apiService.deleteTorboxCache();
                     await cacheService.clearCache();
@@ -327,7 +332,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 case ConnectionState.done:
                   return ListTile(
                     title: const Text('About'),
-                    leading: const Icon(Icons.info),
+                    leading: const Icon(Icons.info_rounded),
                     onTap: () {
                       showAboutDialog(
                         context: context,

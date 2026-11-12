@@ -41,7 +41,6 @@ class ApiKeyScreen extends StatelessWidget {
               controller: _apiKeyController,
               decoration: const InputDecoration(
                 labelText: 'API Key',
-                border: OutlineInputBorder(),
               ),
               obscureText: true,
               enableSuggestions: false,

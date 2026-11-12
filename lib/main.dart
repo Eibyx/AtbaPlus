@@ -21,6 +21,7 @@ import 'screens/setup/api_screen.dart';
 import 'screens/home_page.dart';
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 import 'app_state.dart';
+import 'theme/app_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -127,7 +128,10 @@ class AtbaApp extends StatelessWidget {
     return Consumer<AppState>(
       builder: (context, appState, _) {
         if (appState.isLoading) {
-          return const MaterialApp(home: SplashScreen());
+          return const MaterialApp(
+            debugShowCheckedModeBanner: false,
+            home: SplashScreen(),
+          );
         }
         if (appState.hasError) {
           return const MaterialApp(home: ErrorScreen());
@@ -153,20 +157,14 @@ class AtbaApp extends StatelessWidget {
 
             return MaterialApp(
               title: '',
-              theme: ThemeData(
-                pageTransitionsTheme: const PageTransitionsTheme(
-                  builders: <TargetPlatform, PageTransitionsBuilder>{
-                    // Set the predictive back transitions for Android.
-                    TargetPlatform.android:
-                        PredictiveBackPageTransitionsBuilder(),
-                  },
-                ),
-                useMaterial3: true,
-                colorScheme: lightColorScheme,
+              debugShowCheckedModeBanner: false,
+              theme: AppTheme.build(
+                seedScheme: lightColorScheme,
+                brightness: Brightness.light,
               ),
-              darkTheme: ThemeData(
-                useMaterial3: true,
-                colorScheme: darkColorScheme,
+              darkTheme: AppTheme.build(
+                seedScheme: darkColorScheme,
+                brightness: Brightness.dark,
               ),
               themeMode: ThemeMode.system,
               home: isFirstRun

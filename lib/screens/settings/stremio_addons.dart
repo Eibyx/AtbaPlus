@@ -204,7 +204,6 @@ class _StemioAddonsSettingsWidgetState
                               child: TextField(
                                 controller: manifestController,
                                 decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
                                   hintText: "Enter URL...",
                                 ),
                               ),

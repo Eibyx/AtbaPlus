@@ -126,7 +126,6 @@ class _GoogleDriveIntegrationSectionState
                 controller: widget.googleTokenController,
                 decoration: const InputDecoration(
                   labelText: 'Paste Google token here',
-                  border: OutlineInputBorder(),
                 ),
                 onSubmitted: (value) async {
                   if (value.isNotEmpty) {
