@@ -16,9 +16,9 @@ Future<bool> showPermissionDialog(BuildContext context) async {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: const Text('Permission required'),
+                  title: const Text('Permiso necesario'),
                   content: const Text(
-                    'Storage access is required to download files. Do you want to grant permission?',
+                    'Se necesita acceso al almacenamiento para descargar. ¿Quieres dar permiso?',
                   ),
                   actions: <Widget>[
                     TextButton(
@@ -32,7 +32,7 @@ Future<bool> showPermissionDialog(BuildContext context) async {
                         bool granted = await getStorageGranted(context);
                         Navigator.of(context).pop(granted);
                       },
-                      child: const Text('Yes'),
+                      child: const Text('Sí'),
                     ),
                   ],
                 );

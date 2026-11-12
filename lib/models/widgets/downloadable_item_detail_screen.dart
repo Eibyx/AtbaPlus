@@ -1,4 +1,5 @@
 import 'package:atba/models/library_items/downloadable_item.dart';
+import 'package:atba/l10n.dart';
 import 'package:atba/models/torbox_api_response.dart';
 import 'package:atba/models/widgets/downloads_prompt.dart';
 import 'package:atba/services/torbox_service.dart';
@@ -30,7 +31,7 @@ class DownloadableItemDetailScreen extends StatelessWidget {
     final integrationType = _getIntegrationFileType();
 
     return Scaffold(
-      appBar: AppBar(title: Text("Details")),
+      appBar: AppBar(title: Text("Detalles")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: CustomScrollView(
@@ -51,7 +52,7 @@ class DownloadableItemDetailScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Item Info",
+                        "Información",
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -69,11 +70,11 @@ class DownloadableItemDetailScreen extends StatelessWidget {
                                 builder: (context, snapshot) {
                                   if (snapshot.connectionState ==
                                       ConnectionState.waiting) {
-                                    return Text("Loading magnet...");
+                                    return Text("Cargando magnet…");
                                   } else if (snapshot.hasError ||
                                       snapshot.data?.data == null) {
                                     return Text(
-                                      "Error loading magnet: ${snapshot.data?.detailOrUnknown}",
+                                      "Error al cargar el magnet: ${snapshot.data?.detailOrUnknown}",
                                     );
                                   } else {
                                     return GestureDetector(
@@ -85,15 +86,14 @@ class DownloadableItemDetailScreen extends StatelessWidget {
                                           ClipboardData(text: magnet),
                                         );
                                         if (context.mounted) {
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                'Magnet link copied to clipboard',
-                                              ),
-                                            ),
-                                          );
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                    'Magnet copiado al portapapeles',
+                                                  ),
+                                                ),
+                                              );
                                         }
                                       },
                                       child: Text(
@@ -114,7 +114,7 @@ class DownloadableItemDetailScreen extends StatelessWidget {
                           Icon(Icons.storage, size: 20),
                           SizedBox(width: 8),
                           Text(
-                            'Size: ${getReadableSize(item.size)}',
+                            'Tamaño: ${getReadableSize(item.size)}',
                             style: TextStyle(fontSize: 16),
                           ),
                         ],
@@ -126,7 +126,7 @@ class DownloadableItemDetailScreen extends StatelessWidget {
                           SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              'Status: ${item.downloadState}${item.progress < 1 ? " (${(item.progress * 100).toStringAsFixed(1)}%)" : ""}',
+                              'Estado: ${tr(item.downloadState)}${item.progress < 1 ? " (${(item.progress * 100).toStringAsFixed(1)}%)" : ""}',
                               style: TextStyle(fontSize: 16),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -150,7 +150,7 @@ class DownloadableItemDetailScreen extends StatelessWidget {
                         LinearProgressIndicator(value: item.progress),
                         SizedBox(height: 8),
                         Text(
-                          'ETA: ${readableTime(item.eta)}',
+                          'Tiempo restante: ${readableTime(item.eta)}',
                           style: TextStyle(fontSize: 16),
                         ),
                       ],
@@ -163,11 +163,11 @@ class DownloadableItemDetailScreen extends StatelessWidget {
                           children: [
                             ElevatedButton.icon(
                               icon: Icon(FontAwesome.google_drive_brand),
-                              label: Text("Download with Google Drive"),
+                              label: Text("Enviar a Google Drive"),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Theme.of(
-                                  context,
-                                ).colorScheme.onSecondary,
+                                backgroundColor: Theme.of(context)
+                                    .colorScheme
+                                    .onSecondary,
                               ),
                               onPressed: () async {
                                 final response = await apiService
@@ -182,12 +182,12 @@ class DownloadableItemDetailScreen extends StatelessWidget {
                                     SnackBar(
                                       content: Text(
                                         response.success
-                                            ? 'Item queued for Google Drive'
-                                            : 'Failed to queue item: ${response.detailOrUnknown}',
+                                            ? 'Enviado a la cola de Google Drive'
+                                            : 'No se pudo encolar: ${response.detailOrUnknown}',
                                       ),
                                       action: response.success
                                           ? SnackBarAction(
-                                              label: "View",
+                                              label: "Ver",
                                               onPressed: () => Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
@@ -213,12 +213,12 @@ class DownloadableItemDetailScreen extends StatelessWidget {
             // Files section for DownloadableItem
             SliverToBoxAdapter(
               child: Text(
-                "Files",
+                "Archivos",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
             item.files.isEmpty
-                ? SliverToBoxAdapter(child: Text("No files found."))
+                ? SliverToBoxAdapter(child: Text("No hay archivos."))
                 : SliverList(
                     delegate: SliverChildBuilderDelegate((context, index) {
                       final file = item.files[index];
@@ -287,10 +287,10 @@ class DownloadableItemDetailScreen extends StatelessWidget {
     return Row(
       children: [
         SizedBox(width: 8),
-        _buildButton(context, Text("Watch"), Icon(Icons.play_arrow), () async {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Fetching stream URL...')));
+        _buildButton(context, Text("Ver"), Icon(Icons.play_arrow), () async {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Obteniendo enlace de streaming…')),
+          );
           final response = await getDownloadUrl(apiService, file);
           if (response.success && response.data != null) {
             VideoPlaybackService.playURL(context, response.data as String);
@@ -299,7 +299,7 @@ class DownloadableItemDetailScreen extends StatelessWidget {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-                    'Failed to get stream URL: ${response.detailOrUnknown}',
+                    'No se pudo obtener el stream: ${response.detailOrUnknown}',
                   ),
                 ),
               );
@@ -307,49 +307,61 @@ class DownloadableItemDetailScreen extends StatelessWidget {
           }
         }),
         SizedBox(width: 8),
-        _buildButton(context, Text("Copy link"), Icon(Icons.copy), () async {
-          final link = await getDownloadUrl(apiService, file);
-          if (link.success && link.data != null) {
-            Clipboard.setData(ClipboardData(text: link.data as String));
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text('Link copied to clipboard')));
-          } else {
-            if (context.mounted) {
+        _buildButton(
+          context,
+          Text("Copiar enlace"),
+          Icon(Icons.copy),
+          () async {
+            final link = await getDownloadUrl(apiService, file);
+            if (link.success && link.data != null) {
+              Clipboard.setData(ClipboardData(text: link.data as String));
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Failed to copy link: ${link.detailOrUnknown}'),
-                ),
+                SnackBar(content: Text('Enlace copiado al portapapeles')),
               );
-            }
-          }
-        }),
-        SizedBox(width: 8),
-        _buildButton(context, Text("Download"), Icon(Icons.download), () async {
-          final bool storageGranted = await showPermissionDialog(context);
-          if (!storageGranted) {
-            if (context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'Storage permission is required to download files.',
+            } else {
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'No se pudo copiar el enlace: ${link.detailOrUnknown}',
+                    ),
                   ),
-                ),
-              );
+                );
+              }
             }
-            return;
-          }
-          final result = await item.downloadFile(file);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                result.data != null
-                    ? 'File download started'
-                    : 'Failed to start download',
+          },
+        ),
+        SizedBox(width: 8),
+        _buildButton(
+          context,
+          Text("Descargar"),
+          Icon(Icons.download),
+          () async {
+            final bool storageGranted = await showPermissionDialog(context);
+            if (!storageGranted) {
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Se necesita permiso de almacenamiento para descargar archivos.',
+                    ),
+                  ),
+                );
+              }
+              return;
+            }
+            final result = await item.downloadFile(file);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  result.data != null
+                      ? 'Descarga iniciada'
+                      : 'No se pudo iniciar la descarga',
+                ),
               ),
-            ),
-          );
-        }),
+            );
+          },
+        ),
         if (apiService.googleToken != null &&
             apiService.googleToken!.isNotEmpty &&
             integrationType != null) ...[
@@ -371,12 +383,12 @@ class DownloadableItemDetailScreen extends StatelessWidget {
                   SnackBar(
                     content: Text(
                       response.success
-                          ? 'File queued for Google Drive'
-                          : 'Failed to queue file: ${response.detailOrUnknown}',
+                          ? 'Archivo enviado a la cola de Google Drive'
+                          : 'No se pudo encolar el archivo: ${response.detailOrUnknown}',
                     ),
                     action: response.success
                         ? SnackBarAction(
-                            label: "View",
+                            label: "Ver",
                             onPressed: () => Navigator.push(
                               context,
                               MaterialPageRoute(

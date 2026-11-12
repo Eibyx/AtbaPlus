@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart' show CupertinoPageTransitionsBuilder;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'theme_presets.dart';
+
 /// Shared radii used across the app so every surface feels related.
 class AppRadius {
   static const double sm = 10;
@@ -44,31 +46,36 @@ class AppTheme {
     required ColorScheme seedScheme,
     required Brightness brightness,
     String? fontFamily,
+    ThemePreset? preset,
   }) {
     final isDark = brightness == Brightness.dark;
     final accent = seedScheme.primary;
 
     // Neutral, slightly tinted surfaces.
     final background = isDark
-        ? Color.alphaBlend(
-            accent.withValues(alpha: 0.02),
-            const Color(0xFF0B0C10),
-          )
-        : Color.alphaBlend(
-            accent.withValues(alpha: 0.015),
-            const Color(0xFFF5F6F8),
-          );
+        ? preset?.darkBackground ??
+              Color.alphaBlend(
+                accent.withValues(alpha: 0.02),
+                const Color(0xFF0B0C10),
+              )
+        : preset?.lightBackground ??
+              Color.alphaBlend(
+                accent.withValues(alpha: 0.015),
+                const Color(0xFFF5F6F8),
+              );
     final surface = isDark
-        ? Color.alphaBlend(
-            accent.withValues(alpha: 0.03),
-            const Color(0xFF15161C),
-          )
-        : Colors.white;
+        ? preset?.darkSurface ??
+              Color.alphaBlend(
+                accent.withValues(alpha: 0.03),
+                const Color(0xFF15161C),
+              )
+        : preset?.lightSurface ?? Colors.white;
     final surfaceHigh = isDark
-        ? Color.alphaBlend(
-            accent.withValues(alpha: 0.04),
-            const Color(0xFF1D1F27),
-          )
+        ? preset?.darkSurfaceHigh ??
+              Color.alphaBlend(
+                accent.withValues(alpha: 0.04),
+                const Color(0xFF1D1F27),
+              )
         : const Color(0xFFEEF0F3);
     final outline = isDark
         ? Colors.white.withValues(alpha: 0.08)

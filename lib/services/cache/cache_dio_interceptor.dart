@@ -76,8 +76,7 @@ class TorboxCacheInterceptor extends Interceptor {
   /// response body there would break the download. Those requests (the
   /// `.torrent` export) therefore always hit the network.
   bool _isResolvable(ResponseType responseType) =>
-      responseType == ResponseType.json ||
-      responseType == ResponseType.plain;
+      responseType == ResponseType.json || responseType == ResponseType.plain;
 
   /// JSON bodies are handed to the API client as decoded maps; plain-text
   /// responses (the XML feed) stay strings; anything else is passed through

@@ -1,7 +1,9 @@
 import 'package:atba/models/library_items/library_item.dart';
 import 'package:atba/services/torbox_service.dart';
 import 'package:atba/models/torbox_api_response.dart';
+
 import 'downloadable_item.dart';
+
 import 'package:json_annotation/json_annotation.dart';
 part 'torrent.g.dart';
 

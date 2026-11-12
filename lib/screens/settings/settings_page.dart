@@ -7,6 +7,7 @@ import 'package:atba/screens/settings/library_settings_widget.dart';
 import 'package:atba/screens/settings/stremio_addons.dart';
 import 'package:atba/services/cache/library_item_cache_service.dart';
 import 'package:atba/config/constants.dart';
+import 'package:atba/theme/theme_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
@@ -106,36 +107,34 @@ class _SettingsPageState extends State<SettingsPage> {
       'dolbyvision': 'Dolby Vision',
       'dolbyvisionwithhdr': 'Dolby Vision + HDR',
       'threed': '3D',
-      'nonthreed': 'Non 3D (DO NOT SELECT IF NOT SURE)',
+      'nonthreed': 'No 3D (NO MARCAR SI NO ESTÁS SEGURO)',
       '4k': '4K',
       '1080p': '1080p',
       '720p': '720p',
       '480p': '480p',
-      'other': 'Other (DVDRip/HDRIp/BDRip...)',
+      'other': 'Otros (DVDRip/HDRIp/BDRip...)',
       'scr': 'Screener',
       'cam': 'Cam',
-      'unknown': 'Unknown',
+      'unknown': 'Desconocido',
     };
 
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 72,
         title: Text(
-          'Settings',
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.w800,
-            letterSpacing: -0.6,
-          ),
+          'Ajustes',
+          style: Theme.of(context).textTheme.headlineSmall
+              ?.copyWith(fontWeight: FontWeight.w800, letterSpacing: -0.6),
         ),
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(12, 0, 12, 24),
         children: [
           SimpleSettingsTile(
-            title: 'Account',
+            title: 'Cuenta',
             leading: Icon(Icons.account_circle_rounded),
             child: SettingsScreen(
-              title: 'Account settings',
+              title: 'Cuenta',
               children: <Widget>[
                 // We're using secure storage to store the API key, so we would need to implement a custom storage on top of SharedPreferences to combine it with secure storage
                 // in this case, it's easier just to use a custom widget
@@ -145,9 +144,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 // TODO: make look less ugly & share code
                 TextField(
                   controller: apiKeyController,
-                  decoration: const InputDecoration(
-                    labelText: 'API Key',
-                  ),
+                  decoration: const InputDecoration(labelText: 'Clave API'),
                   obscureText: true,
                   enableSuggestions: false,
                   autocorrect: false,
@@ -160,9 +157,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     final response = await apiService.getUserData();
                     if (apiKey.isNotEmpty && response.success) {
                       await apiService.saveApiKey(apiKey);
-                      ScaffoldMessenger.of(
-                        context,
-                      ).showSnackBar(SnackBar(content: Text('API Key saved')));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Clave API guardada')),
+                      );
                       Navigator.pop(context);
                     } else {
                       apiService.deleteApiKey();
@@ -171,74 +168,80 @@ class _SettingsPageState extends State<SettingsPage> {
                           content: Text(
                             apiKey.isNotEmpty
                                 ? (response.detailOrUnknown)
-                                : 'API Key is required!',
+                                : '¡La clave API es obligatoria!',
                           ),
                         ),
                       );
                     }
                   },
-                  child: const Text('Continue'),
+                  child: const Text('Continuar'),
                 ),
 
                 SimpleSettingsTile(
-                  title: 'Delete API Key',
+                  title: 'Borrar clave API',
                   leading: Icon(Icons.delete_rounded),
                   onTap: () async {
                     await apiService.deleteApiKey();
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(SnackBar(content: Text('API Key deleted')));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Clave API borrada')),
+                    );
                   },
                 ),
               ],
             ),
           ),
           SimpleSettingsTile(
-            title: "Appearance",
+            title: "Apariencia",
             leading: Icon(Icons.palette_rounded),
             child: SettingsScreen(
-              title: 'Appearance settings',
+              title: 'Apariencia',
               children: <Widget>[
                 DropDownSettingsTile<String>(
-                  title: 'Theme',
+                  title: 'Modo',
                   settingKey: Constants.theme,
                   values: <String, String>{
-                    'system': 'System default',
-                    'light': 'Light',
-                    'dark': 'Dark',
+                    'system': 'Según el sistema',
+                    'light': 'Claro',
+                    'dark': 'Oscuro',
                   },
                   selected: 'system',
                 ),
-                CheckboxSettingsTile(
-                  title: "Use custom colour theme",
-                  settingKey: Constants.useCustomColorTheme,
-                  defaultValue: false,
-                  childrenIfEnabled: [
-                    ColorPickerSettingsTile(
-                      settingKey: Constants.colorTheme,
-                      title: 'Accent Color',
-                      defaultValue: Colors.green,
-                    ),
-                  ],
+                ThemePresetPicker(
+                  title: 'Tema para modo claro',
+                  icon: Icons.light_mode_rounded,
+                  settingKey: Constants.lightThemePreset,
+                  defaultValue: _defaultPreset,
+                  brightness: Brightness.light,
                 ),
-
+                ThemePresetPicker(
+                  title: 'Tema para modo oscuro',
+                  icon: Icons.dark_mode_rounded,
+                  settingKey: Constants.darkThemePreset,
+                  defaultValue: _defaultPreset,
+                  brightness: Brightness.dark,
+                ),
+                ColorPickerSettingsTile(
+                  settingKey: Constants.colorTheme,
+                  title: 'Color del tema "Personalizado"',
+                  defaultValue: Colors.green,
+                ),
                 CheckboxSettingsTile(
                   settingKey: Constants.useTorboxFontFamily,
-                  title: 'Use TorBox\'s dotted font',
-                  subtitle: 'Off = your device\'s system font',
+                  title: 'Usar la fuente punteada de TorBox',
+                  subtitle: 'Desactivado = fuente del sistema',
                   defaultValue: false,
                 ),
               ],
             ),
           ),
           SimpleSettingsTile(
-            title: "Integrations",
+            title: "Integraciones",
             leading: Icon(Icons.extension_rounded),
             child: SettingsScreen(
-              title: "Integrations settings",
+              title: "Integraciones",
               children: <Widget>[
                 SimpleSettingsTile(
-                  title: "Jobs status",
+                  title: "Trabajos de integración",
                   leading: Icon(Icons.cloud_sync_rounded),
                   child: JobsStatusPage(),
                 ),
@@ -256,15 +259,15 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           LibrarySettingsTile(),
           SimpleSettingsTile(
-            title: "Storage",
+            title: "Almacenamiento",
             leading: Icon(Icons.folder_rounded),
             child: SettingsScreen(
-              title: "Storage settings",
+              title: "Almacenamiento",
               children: <Widget>[
                 if (!kIsWeb) ...[
                   ValueChangeObserver<String>(
                     cacheKey: Constants.folderPath,
-                    defaultValue: 'No download folder set',
+                    defaultValue: 'Sin carpeta de descargas',
                     builder:
                         (
                           BuildContext context,
@@ -272,7 +275,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           OnChanged<String> onChanged,
                         ) {
                           return ListTile(
-                            title: const Text("Storage location"),
+                            title: const Text("Carpeta de descargas"),
                             leading: Icon(Icons.folder_rounded),
                             onTap: () async {
                               // TODO: niceify with methods in permission model
@@ -301,19 +304,18 @@ class _SettingsPageState extends State<SettingsPage> {
                   const Divider(),
                 ],
                 CheckboxSettingsTile(
-                  title: "Use caching",
+                  title: "Usar caché",
                   settingKey: Constants.useCache,
                   defaultValue: true,
                 ),
                 ListTile(
-                  title: const Text("Clear cache"),
+                  title: const Text("Borrar caché"),
                   leading: Icon(Icons.delete_rounded),
                   onTap: () async {
                     await apiService.deleteTorboxCache();
                     await cacheService.clearCache();
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(SnackBar(content: Text('Cache cleared')));
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(SnackBar(content: Text('Caché borrada')));
                   },
                 ),
               ],
@@ -322,7 +324,7 @@ class _SettingsPageState extends State<SettingsPage> {
           if (!kIsWeb && Platform.isAndroid)
             CheckboxSettingsTile(
               settingKey: Constants.useInternalVideoPlayer,
-              title: 'Use internal video player',
+              title: 'Usar reproductor interno',
               defaultValue: (kIsWeb || !Platform.isAndroid),
             ),
           FutureBuilder<PackageInfo>(
@@ -331,7 +333,7 @@ class _SettingsPageState extends State<SettingsPage> {
               switch (snapshot.connectionState) {
                 case ConnectionState.done:
                   return ListTile(
-                    title: const Text('About'),
+                    title: const Text('Acerca de'),
                     leading: const Icon(Icons.info_rounded),
                     onTap: () {
                       showAboutDialog(
@@ -350,6 +352,11 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
     );
   }
+
+  static String get _defaultPreset =>
+      (Settings.getValue<bool>(Constants.useCustomColorTheme) ?? false)
+      ? 'custom'
+      : 'dynamic';
 
   String parseStorageFolderPath(String path) {
     // TODO: parse urlbookmark somehow for ios

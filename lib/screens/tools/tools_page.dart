@@ -38,25 +38,25 @@ class _ToolsPageState extends State<ToolsPage> {
 
   static final List<(String, List<_Tool>)> _sections = [
     (
-      'Account',
+      'Cuenta',
       [
         _Tool(
-          'Account',
-          'Plan, usage & billing',
+          'Cuenta',
+          'Plan, uso y facturación',
           Icons.person_rounded,
           const Color(0xFF60A5FA),
           (_) => const AccountPage(),
         ),
         _Tool(
-          'TorBox settings',
-          'Seeding, notifications, links',
+          'Ajustes de TorBox',
+          'Seeding, notificaciones, enlaces',
           Icons.tune_rounded,
           const Color(0xFFA78BFA),
           (_) => const AccountSettingsPage(),
         ),
         _Tool(
-          'Notifications',
-          'Your TorBox inbox',
+          'Notificaciones',
+          'Tu bandeja de TorBox',
           Icons.notifications_rounded,
           const Color(0xFFFBBF24),
           (_) => const NotificationsPage(),
@@ -64,18 +64,18 @@ class _ToolsPageState extends State<ToolsPage> {
       ],
     ),
     (
-      'Automation',
+      'Automatización',
       [
         _Tool(
-          'RSS feeds',
-          'Auto-add from feeds',
+          'Feeds RSS',
+          'Añadir automáticamente desde feeds',
           Icons.rss_feed_rounded,
           const Color(0xFFFB923C),
           (_) => const RssFeedsPage(),
         ),
         _Tool(
-          'Integration jobs',
-          'Cloud uploads queue',
+          'Trabajos de integración',
+          'Cola de subidas a la nube',
           Icons.cloud_sync_rounded,
           const Color(0xFF22D3EE),
           (_) => const JobsStatusPage(),
@@ -83,32 +83,32 @@ class _ToolsPageState extends State<ToolsPage> {
       ],
     ),
     (
-      'Utilities',
+      'Utilidades',
       [
         _Tool(
-          'Cache checker',
-          'Instant availability & torrent info',
+          'Comprobar caché',
+          'Disponibilidad inmediata e info de torrents',
           Icons.bolt_rounded,
           const Color(0xFF34D399),
           (_) => const CacheCheckerPage(),
         ),
         _Tool(
-          'Supported hosters',
-          'Web download sources',
+          'Servidores compatibles',
+          'Fuentes de descarga web',
           Icons.public_rounded,
           const Color(0xFFF472B6),
           (_) => const HostersPage(),
         ),
         _Tool(
-          'Usenet provider',
-          'Your NNTP credentials',
+          'Proveedor Usenet',
+          'Tus credenciales NNTP',
           Icons.hub_rounded,
           const Color(0xFF818CF8),
           (_) => const UsenetProviderPage(),
         ),
         _Tool(
-          'Speed test',
-          'Test TorBox CDN speed',
+          'Test de velocidad',
+          'Mide la velocidad del CDN de TorBox',
           Icons.speed_rounded,
           const Color(0xFF4ADE80),
           (_) => const SpeedtestPage(),
@@ -119,15 +119,15 @@ class _ToolsPageState extends State<ToolsPage> {
       'TorBox',
       [
         _Tool(
-          'Service status',
-          'Live network stats',
+          'Estado del servicio',
+          'Estadísticas en vivo',
           Icons.monitor_heart_rounded,
           const Color(0xFFF87171),
           (_) => const ServiceStatusPage(),
         ),
         _Tool(
-          'Changelog',
-          "What's new on TorBox",
+          'Novedades',
+          "Lo nuevo en TorBox",
           Icons.new_releases_rounded,
           const Color(0xFF2DD4BF),
           (_) => const ChangelogPage(),
@@ -154,14 +154,14 @@ class _ToolsPageState extends State<ToolsPage> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    final columns = width > 900 ? 4 : (width > 600 ? 3 : 2);
+    final columns = width > 900 ? 3 : (width > 600 ? 2 : 1);
     var index = 0;
     return Scaffold(
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
-          SliverAppBar.large(
-            title: const Text('Tools'),
+          SliverAppBar.medium(
+            title: const Text('Herramientas'),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           ),
           SliverToBoxAdapter(
@@ -171,18 +171,20 @@ class _ToolsPageState extends State<ToolsPage> {
             SliverToBoxAdapter(child: SectionHeader(title: name)),
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              sliver: SliverGrid.count(
-                crossAxisCount: columns,
-                mainAxisSpacing: 12,
-                crossAxisSpacing: 12,
-                childAspectRatio: 1.3,
-                children: [
+              sliver: SliverGrid(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: columns,
+                  mainAxisSpacing: 8,
+                  crossAxisSpacing: 8,
+                  mainAxisExtent: 64,
+                ),
+                delegate: SliverChildListDelegate([
                   for (final tool in tools)
                     EntranceAnimation(
                       index: index++,
                       child: _ToolCard(tool: tool),
                     ),
-                ],
+                ]),
               ),
             ),
           ],
@@ -197,7 +199,7 @@ class _AccountHeader extends StatelessWidget {
   final UserData? user;
   const _AccountHeader({required this.user});
 
-  static const _plans = {0: 'Free', 1: 'Essential', 2: 'Pro', 3: 'Standard'};
+  static const _plans = {0: 'Gratis', 1: 'Essential', 2: 'Pro', 3: 'Standard'};
 
   @override
   Widget build(BuildContext context) {
@@ -220,11 +222,11 @@ class _AccountHeader extends StatelessWidget {
           scheme.tertiary.withValues(alpha: 0.12),
         ],
       ),
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(14),
       child: Row(
         children: [
           CircleAvatar(
-            radius: 26,
+            radius: 22,
             backgroundColor: scheme.primary,
             foregroundColor: scheme.onPrimary,
             child: Text(
@@ -249,7 +251,7 @@ class _AccountHeader extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    user?.email ?? 'Loading account…',
+                    user?.email ?? 'Cargando cuenta…',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.titleMedium,
@@ -267,7 +269,7 @@ class _AccountHeader extends StatelessWidget {
                       if (expires != null)
                         StatusPill(
                           label:
-                              'Renews ${formatDate(expires, withTime: false)}',
+                              'Renueva el ${formatDate(expires, withTime: false)}',
                         ),
                     ],
                   ),
@@ -291,32 +293,40 @@ class _ToolCard extends StatelessWidget {
     final theme = Theme.of(context);
     return SurfaceCard(
       margin: EdgeInsets.zero,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       onTap: () =>
           Navigator.push(context, MaterialPageRoute(builder: tool.builder)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          Hero(
-            tag: 'tool-${tool.title}',
-            child: IconBadge(icon: tool.icon, color: tool.color),
-          ),
-          const Spacer(),
-          Text(
-            tool.title,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w700,
+          IconBadge(icon: tool.icon, color: tool.color, size: 40),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  tool.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                Text(
+                  tool.subtitle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 2),
-          Text(
-            tool.subtitle,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
+          Icon(
+            Icons.chevron_right_rounded,
+            color: theme.colorScheme.onSurfaceVariant,
           ),
         ],
       ),

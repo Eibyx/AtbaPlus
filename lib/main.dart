@@ -11,17 +11,19 @@ import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:provider/provider.dart';
+
 import 'services/shared_prefs_service.dart';
 import 'services/secure_storage_service.dart';
 import 'services/torbox_service.dart';
 import 'services/stremio_service.dart';
 
-import 'package:dynamic_color/dynamic_color.dart';
 import 'screens/setup/api_screen.dart';
 import 'screens/home_page.dart';
+
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
+
 import 'app_state.dart';
-import 'theme/app_theme.dart';
+import 'theme/themed_app.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -49,11 +51,11 @@ Future<void> main() async {
     FileDownloader().configureNotification(
       tapOpensFile: true,
       progressBar: true,
-      running: TaskNotification('Downloading', '{progress} {filename}'),
-      complete: TaskNotification('Download finished', '{filename}'),
+      running: TaskNotification('Descargando', '{progress} {filename}'),
+      complete: TaskNotification('Descarga terminada', '{filename}'),
       error: TaskNotification("Error", "{filename}"),
-      paused: TaskNotification("Paused", "{filename}"),
-      canceled: TaskNotification("Canceled", "{filename}"),
+      paused: TaskNotification("En pausa", "{filename}"),
+      canceled: TaskNotification("Cancelada", "{filename}"),
     );
   }
   FileDownloader().configure(
@@ -137,41 +139,10 @@ class AtbaApp extends StatelessWidget {
           return const MaterialApp(home: ErrorScreen());
         }
 
-        return DynamicColorBuilder(
-          builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
-            ColorScheme lightColorScheme;
-            ColorScheme darkColorScheme;
-
-            if (lightDynamic != null && darkDynamic != null) {
-              lightColorScheme = lightDynamic;
-              darkColorScheme = darkDynamic;
-            } else {
-              lightColorScheme = ColorScheme.fromSeed(
-                seedColor: const Color.fromRGBO(0, 246, 33, 1),
-              );
-              darkColorScheme = ColorScheme.fromSeed(
-                seedColor: const Color.fromRGBO(0, 246, 33, 1),
-                brightness: Brightness.dark,
-              );
-            }
-
-            return MaterialApp(
-              title: '',
-              debugShowCheckedModeBanner: false,
-              theme: AppTheme.build(
-                seedScheme: lightColorScheme,
-                brightness: Brightness.light,
-              ),
-              darkTheme: AppTheme.build(
-                seedScheme: darkColorScheme,
-                brightness: Brightness.dark,
-              ),
-              themeMode: ThemeMode.system,
-              home: isFirstRun
-                  ? (hasApiKey ? const HomeScreen() : ApiKeyScreen())
-                  : const HomeScreen(),
-            );
-          },
+        return ThemedApp(
+          home: isFirstRun
+              ? (hasApiKey ? const HomeScreen() : ApiKeyScreen())
+              : const HomeScreen(),
         );
       },
     );
@@ -193,7 +164,7 @@ class ErrorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: Center(child: Text('An error occurred. Please restart the app.')),
+      body: Center(child: Text('Ocurrió un error. Reinicia la app.')),
     );
   }
 }

@@ -72,7 +72,7 @@ class _CacheCheckerPageState extends State<CacheCheckerPage> {
     FocusScope.of(context).unfocus();
     final api = torboxApiOf(context);
     if (api == null) {
-      showToast(context, 'Add your API key first', type: ToastType.error);
+      showToast(context, 'Primero añade tu clave API', type: ToastType.error);
       return;
     }
     final entries = <_Entry>[];
@@ -83,7 +83,11 @@ class _CacheCheckerPageState extends State<CacheCheckerPage> {
       if (hash != null) entries.add(_Entry(line, hash));
     }
     if (entries.isEmpty) {
-      showToast(context, 'Nothing valid to check', type: ToastType.error);
+      showToast(
+        context,
+        'No hay nada válido que comprobar',
+        type: ToastType.error,
+      );
       return;
     }
     setState(() => _loading = true);
@@ -113,7 +117,7 @@ class _CacheCheckerPageState extends State<CacheCheckerPage> {
       final hits = entries.where((e) => e.cached != null).length;
       showToast(
         context,
-        '$hits of ${entries.length} cached',
+        '$hits de ${entries.length} en caché',
         type: hits > 0 ? ToastType.success : ToastType.info,
       );
     } catch (e) {
@@ -135,7 +139,7 @@ class _CacheCheckerPageState extends State<CacheCheckerPage> {
         _Kind.web => api.webDownloads.createWebDownload(link: e.input),
         _Kind.usenet => api.usenet.createUsenetDownload(link: e.input),
       },
-      successMessage: 'Added to your library',
+      successMessage: 'Añadido a tu biblioteca',
     );
   }
 
@@ -144,7 +148,7 @@ class _CacheCheckerPageState extends State<CacheCheckerPage> {
     if (api == null) return;
     showToolSheet<void>(
       context,
-      title: 'Torrent info',
+      title: 'Info del torrent',
       builder: (context) => FutureBuilder<TorBoxResponse<TorrentInfoData>>(
         future: api.torrents.getTorrentInfo(hash: e.hash, timeout: 10),
         builder: (context, snap) {
@@ -159,15 +163,15 @@ class _CacheCheckerPageState extends State<CacheCheckerPage> {
             return Text(
               snap.hasError
                   ? describeError(snap.error!)
-                  : (snap.data?.detail ?? 'No info found'),
+                  : (snap.data?.detail ?? 'Sin información'),
             );
           }
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              InfoRow(label: 'Name', value: info.name ?? '—'),
+              InfoRow(label: 'Nombre', value: info.name ?? '—'),
               InfoRow(label: 'Hash', value: info.hash, copyable: true),
-              InfoRow(label: 'Size', value: getReadableSize(info.size ?? 0)),
+              InfoRow(label: 'Tamaño', value: getReadableSize(info.size ?? 0)),
               InfoRow(label: 'Seeds', value: '${info.seeds ?? '—'}'),
               InfoRow(label: 'Peers', value: '${info.peers ?? '—'}'),
               InfoRow(
@@ -176,7 +180,7 @@ class _CacheCheckerPageState extends State<CacheCheckerPage> {
               ),
               if ((info.files ?? []).isNotEmpty) ...[
                 const SizedBox(height: 8),
-                Text('Files', style: Theme.of(context).textTheme.titleSmall),
+                Text('Archivos', style: Theme.of(context).textTheme.titleSmall),
                 for (final f in info.files!.take(100))
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
@@ -207,7 +211,7 @@ class _CacheCheckerPageState extends State<CacheCheckerPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return ToolScaffold(
-      title: 'Cache checker',
+      title: 'Comprobar caché',
       slivers: [
         SliverToBoxAdapter(
           child: Padding(
@@ -247,11 +251,11 @@ class _CacheCheckerPageState extends State<CacheCheckerPage> {
                   style: theme.textTheme.bodyMedium?.copyWith(height: 1.4),
                   decoration: InputDecoration(
                     labelText: switch (_kind) {
-                      _Kind.torrent => 'Magnets or info hashes',
-                      _Kind.usenet => 'NZB links or hashes',
-                      _Kind.web => 'Web links',
+                      _Kind.torrent => 'Magnets o hashes',
+                      _Kind.usenet => 'Enlaces NZB o hashes',
+                      _Kind.web => 'Enlaces web',
                     },
-                    hintText: 'One per line',
+                    hintText: 'Uno por línea',
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -261,7 +265,7 @@ class _CacheCheckerPageState extends State<CacheCheckerPage> {
                       child: OutlinedButton.icon(
                         onPressed: _paste,
                         icon: const Icon(Icons.content_paste_rounded),
-                        label: const Text('Paste'),
+                        label: const Text('Pegar'),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -284,7 +288,7 @@ class _CacheCheckerPageState extends State<CacheCheckerPage> {
                                   key: ValueKey('i'),
                                 ),
                         ),
-                        label: const Text('Check'),
+                        label: const Text('Comprobar'),
                       ),
                     ),
                   ],
@@ -295,9 +299,9 @@ class _CacheCheckerPageState extends State<CacheCheckerPage> {
         ),
         if (_results != null) ...[
           SectionHeader(
-            title: 'Results',
+            title: 'Resultados',
             trailing: Text(
-              '${_results!.where((e) => e.cached != null).length}/${_results!.length} cached',
+              '${_results!.where((e) => e.cached != null).length}/${_results!.length} en caché',
               style: theme.textTheme.labelMedium,
             ),
           ).let((w) => SliverToBoxAdapter(child: w)),
@@ -342,7 +346,9 @@ class _CacheCheckerPageState extends State<CacheCheckerPage> {
                                   spacing: 6,
                                   children: [
                                     StatusPill(
-                                      label: hit ? 'Cached' : 'Not cached',
+                                      label: hit
+                                          ? 'En caché'
+                                          : 'No está en caché',
                                       color: color,
                                     ),
                                     if (hit)
@@ -379,7 +385,7 @@ class _CacheCheckerPageState extends State<CacheCheckerPage> {
                             TextButton.icon(
                               onPressed: () => _add(e),
                               icon: const Icon(Icons.add_rounded, size: 18),
-                              label: const Text('Add'),
+                              label: const Text('Añadir'),
                             ),
                         ],
                       ),

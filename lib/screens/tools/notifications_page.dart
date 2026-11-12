@@ -18,40 +18,40 @@ class _NotificationsPageState extends State<NotificationsPage> {
   Widget build(BuildContext context) {
     return ApiLoader<List<NotificationData>>(
       key: _loaderKey,
-      title: 'Notifications',
+      title: 'Notificaciones',
       load: (api) => api.notifications.getNotificationFeed(),
       isEmpty: (d) => d.where((n) => !_dismissed.contains(n.id)).isEmpty,
       emptyState: EmptyState(
         icon: Icons.notifications_off_rounded,
-        title: "You're all caught up",
-        message: 'New TorBox notifications will show up here.',
+        title: "Todo al día",
+        message: 'Aquí aparecerán las notificaciones de TorBox.',
         action: OutlinedButton.icon(
           onPressed: _sendTest,
           icon: const Icon(Icons.send_rounded),
-          label: const Text('Send a test notification'),
+          label: const Text('Enviar notificación de prueba'),
         ),
       ),
       actions: (context, reload) => [
         IconButton(
-          tooltip: 'Send test notification',
+          tooltip: 'Enviar notificación de prueba',
           icon: const Icon(Icons.send_rounded),
           onPressed: _sendTest,
         ),
         IconButton(
-          tooltip: 'Clear all',
+          tooltip: 'Borrar todas',
           icon: const Icon(Icons.clear_all_rounded),
           onPressed: () async {
             final ok = await confirmAction(
               context,
-              title: 'Clear all notifications?',
-              message: 'This removes every notification from your account.',
-              confirmLabel: 'Clear all',
+              title: '¿Borrar todas las notificaciones?',
+              message: 'Se borrarán todas las notificaciones de tu cuenta.',
+              confirmLabel: 'Borrar todas',
             );
             if (!ok || !context.mounted) return;
             final r = await runApiAction(
               context,
               (api) => api.notifications.clearAllNotifications(),
-              successMessage: 'Notifications cleared',
+              successMessage: 'Notificaciones borradas',
             );
             if (r != null) reload();
           },
@@ -91,7 +91,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                     final r = await runApiAction(
                       context,
                       (api) => api.notifications.clearNotification(n.id),
-                      successMessage: 'Notification removed',
+                      successMessage: 'Notificación borrada',
                     );
                     if (r == null && mounted) {
                       setState(() => _dismissed.remove(n.id));
@@ -152,7 +152,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
     final r = await runApiAction(
       context,
       (api) => api.notifications.sendTestNotification(),
-      successMessage: 'Test notification sent',
+      successMessage: 'Notificación de prueba enviada',
     );
     if (r != null) {
       await Future.delayed(const Duration(milliseconds: 800));

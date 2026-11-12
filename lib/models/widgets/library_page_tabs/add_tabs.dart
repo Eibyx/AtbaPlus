@@ -1,4 +1,5 @@
 import 'package:atba/models/torbox_api_response.dart';
+import 'package:atba/l10n.dart';
 import 'package:atba/services/torbox_service.dart' as torbox;
 import 'package:collection/collection.dart';
 import 'package:file_picker/file_picker.dart';
@@ -25,14 +26,14 @@ class _AddWebDownloadsTabState extends State<AddWebDownloadsTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Web Downloads')),
+      appBar: AppBar(title: const Text('Añadir descargas web')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Text(
-              'Enter one or more URLs to download, separated by new lines.',
+              'Escribe una o más URLs, una por línea.',
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
@@ -48,7 +49,7 @@ class _AddWebDownloadsTabState extends State<AddWebDownloadsTab> {
             TextField(
               controller: passwordController,
               decoration: const InputDecoration(
-                labelText: 'Password (optional)',
+                labelText: 'Contraseña (opcional)',
               ),
             ),
             const SizedBox(height: 24),
@@ -56,12 +57,12 @@ class _AddWebDownloadsTabState extends State<AddWebDownloadsTab> {
                 ? const Center(child: CircularProgressIndicator())
                 : ElevatedButton.icon(
                     icon: const Icon(Icons.add),
-                    label: const Text('Add Downloads'),
+                    label: const Text('Añadir descargas'),
                     onPressed: () async {
                       if (urlsController.text.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text('Please enter at least one URL.'),
+                            content: Text('Escribe al menos una URL.'),
                           ),
                         );
                         return;
@@ -88,7 +89,7 @@ class _AddWebDownloadsTabState extends State<AddWebDownloadsTab> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                'Failed to add $url: ${response.detail}',
+                                'No se pudo añadir $url: ${response.detail}',
                               ),
                             ),
                           );
@@ -103,7 +104,7 @@ class _AddWebDownloadsTabState extends State<AddWebDownloadsTab> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
-                              '$successCount download(s) added successfully.',
+                              '$successCount descarga(s) añadida(s).',
                             ),
                           ),
                         );
@@ -112,7 +113,7 @@ class _AddWebDownloadsTabState extends State<AddWebDownloadsTab> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
-                              '$successCount out of ${urls.length} download(s) added successfully.',
+                              '$successCount de ${urls.length} descarga(s) añadida(s).',
                             ),
                           ),
                         );
@@ -142,37 +143,33 @@ class _AddMagnetTabState extends State<AddMagnetTab> {
     final apiService = Provider.of<torbox.TorboxAPI>(context, listen: false);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Magnet Links')),
+      appBar: AppBar(title: const Text('Añadir magnets')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Text(
-              'Paste one or more magnet links to start new torrent downloads.',
+              'Pega uno o más magnets, uno por línea.',
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
             TextField(
               controller: magnetLinkController,
               maxLines: 5,
-              decoration: const InputDecoration(
-                labelText: 'Magnet Links',
-              ),
+              decoration: const InputDecoration(labelText: 'Magnets'),
             ),
             const SizedBox(height: 24),
             _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : ElevatedButton.icon(
                     icon: const Icon(Icons.add),
-                    label: const Text('Add Torrents'),
+                    label: const Text('Añadir torrents'),
                     onPressed: () async {
                       if (magnetLinkController.text.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text(
-                              'Please enter at least one magnet link.',
-                            ),
+                            content: Text('Escribe al menos un magnet.'),
                           ),
                         );
                         return;
@@ -197,7 +194,7 @@ class _AddMagnetTabState extends State<AddMagnetTab> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                'Failed to add torrent: ${response.detailOrUnknown}',
+                                'No se pudo añadir el torrent: ${response.detailOrUnknown}',
                               ),
                             ),
                           );
@@ -213,7 +210,7 @@ class _AddMagnetTabState extends State<AddMagnetTab> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
-                              '$successCount torrent${successCount != 1 ? "s" : ""} added successfully.',
+                              '$successCount torrent${successCount != 1 ? "s" : ""} añadido${successCount != 1 ? "s" : ""}.',
                             ),
                           ),
                         );
@@ -222,7 +219,7 @@ class _AddMagnetTabState extends State<AddMagnetTab> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
-                              '$successCount out of ${magnetLinks.length} torrent(s) added successfully.',
+                              '$successCount de ${magnetLinks.length} torrent(s) añadido(s).',
                             ),
                           ),
                         );
@@ -252,7 +249,7 @@ class _AddTorrentFileTabState extends State<AddTorrentFileTab> {
     final apiService = Provider.of<torbox.TorboxAPI>(context, listen: false);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Torrent File')),
+      appBar: AppBar(title: const Text('Añadir archivo .torrent')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -260,13 +257,13 @@ class _AddTorrentFileTabState extends State<AddTorrentFileTab> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Text(
-              'Select a .torrent file from your device to start a new download.',
+              'Elige un archivo .torrent de tu dispositivo.',
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
               icon: const Icon(Icons.upload_file),
-              label: const Text('Select .torrent file'),
+              label: const Text('Elegir archivo .torrent'),
               onPressed: () async {
                 List<PlatformFile> result = await FilePicker.pickFiles(
                   type: FileType.custom,
@@ -297,16 +294,14 @@ class _AddTorrentFileTabState extends State<AddTorrentFileTab> {
 
                   if (response.success == true) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Torrent added successfully'),
-                      ),
+                      const SnackBar(content: Text('Torrent añadido')),
                     );
                     Navigator.pop(context);
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          'Failed to add torrent: ${response.detailOrUnknown}',
+                          'No se pudo añadir el torrent: ${response.detailOrUnknown}',
                         ),
                       ),
                     );
@@ -316,7 +311,7 @@ class _AddTorrentFileTabState extends State<AddTorrentFileTab> {
             ),
             const SizedBox(height: 16),
             if (_fileName != null)
-              Text('Selected file: $_fileName', textAlign: TextAlign.center),
+              Text('Archivo: $_fileName', textAlign: TextAlign.center),
             const SizedBox(height: 16),
             if (_isLoading) const Center(child: CircularProgressIndicator()),
           ],
@@ -357,28 +352,26 @@ class _AddNzbLinkTabState extends State<AddNzbLinkTab> {
     final apiService = Provider.of<torbox.TorboxAPI>(context, listen: false);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Usenet from URL')),
+      appBar: AppBar(title: const Text('Añadir Usenet desde URL')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Text(
-              'Enter a URL to an NZB file to start a new Usenet download.',
+              'Escribe la URL de un archivo NZB.',
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
             TextField(
               controller: linkController,
-              decoration: const InputDecoration(
-                labelText: 'NZB File URL',
-              ),
+              decoration: const InputDecoration(labelText: 'URL del NZB'),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: passwordController,
               decoration: const InputDecoration(
-                labelText: 'Password (optional)',
+                labelText: 'Contraseña (opcional)',
               ),
             ),
             const SizedBox(height: 24),
@@ -386,11 +379,11 @@ class _AddNzbLinkTabState extends State<AddNzbLinkTab> {
                 ? const Center(child: CircularProgressIndicator())
                 : ElevatedButton.icon(
                     icon: const Icon(Icons.add),
-                    label: const Text('Add from URL'),
+                    label: const Text('Añadir desde URL'),
                     onPressed: () async {
                       if (linkController.text.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Please enter a URL.')),
+                          const SnackBar(content: Text('Escribe una URL.')),
                         );
                         return;
                       }
@@ -415,7 +408,7 @@ class _AddNzbLinkTabState extends State<AddNzbLinkTab> {
                       if (response.success) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text('Usenet download added successfully'),
+                            content: Text('Descarga Usenet añadida'),
                           ),
                         );
                         Navigator.pop(context);
@@ -423,7 +416,7 @@ class _AddNzbLinkTabState extends State<AddNzbLinkTab> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
-                              'Failed to add Usenet download: ${response.detailOrUnknown}',
+                              'No se pudo añadir la descarga Usenet: ${response.detailOrUnknown}',
                             ),
                           ),
                         );
@@ -454,7 +447,7 @@ class _AddNzbFileTabState extends State<AddNzbFileTab> {
     final apiService = Provider.of<torbox.TorboxAPI>(context, listen: false);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Usenet from File')),
+      appBar: AppBar(title: const Text('Añadir Usenet desde archivo')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -462,20 +455,20 @@ class _AddNzbFileTabState extends State<AddNzbFileTab> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Text(
-              'Select an .nzb file from your device to start a new Usenet download.',
+              'Elige un archivo .nzb de tu dispositivo.',
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
             TextField(
               controller: passwordController,
               decoration: const InputDecoration(
-                labelText: 'Password (optional)',
+                labelText: 'Contraseña (opcional)',
               ),
             ),
             const SizedBox(height: 16),
             ElevatedButton.icon(
               icon: const Icon(Icons.upload_file),
-              label: const Text('Select .nzb file'),
+              label: const Text('Elegir archivo .nzb'),
               onPressed: _isLoading
                   ? null
                   : () async {
@@ -512,9 +505,7 @@ class _AddNzbFileTabState extends State<AddNzbFileTab> {
                         if (response.success) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text(
-                                'Usenet download added successfully',
-                              ),
+                              content: Text('Descarga Usenet añadida'),
                             ),
                           );
                           Navigator.pop(context);
@@ -522,7 +513,7 @@ class _AddNzbFileTabState extends State<AddNzbFileTab> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                'Failed to add Usenet download: ${response.detailOrUnknown}',
+                                'No se pudo añadir la descarga Usenet: ${response.detailOrUnknown}',
                               ),
                             ),
                           );
@@ -532,7 +523,7 @@ class _AddNzbFileTabState extends State<AddNzbFileTab> {
             ),
             const SizedBox(height: 16),
             if (_fileName != null)
-              Text('Selected file: $_fileName', textAlign: TextAlign.center),
+              Text('Archivo: $_fileName', textAlign: TextAlign.center),
             if (_isLoading)
               const Padding(
                 padding: EdgeInsets.only(top: 16.0),
@@ -743,9 +734,7 @@ class _AddSearchTabState extends State<AddSearchTab> {
         _isLoading = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to search: ${response.detailOrUnknown}'),
-        ),
+        SnackBar(content: Text('Error al buscar: ${response.detailOrUnknown}')),
       );
     }
   }
@@ -789,7 +778,7 @@ class _AddSearchTabState extends State<AddSearchTab> {
       return [
         const Padding(
           padding: EdgeInsets.all(16.0),
-          child: Text('No results to filter'),
+          child: Text('No hay resultados para filtrar'),
         ),
       ];
     }
@@ -938,7 +927,7 @@ class _AddSearchTabState extends State<AddSearchTab> {
                         controlller.open();
                       }
                     },
-                    tooltip: "Sort search results",
+                    tooltip: "Ordenar resultados",
                   );
                 },
             menuChildren: List<MenuItemButton>.generate(
@@ -950,7 +939,7 @@ class _AddSearchTabState extends State<AddSearchTab> {
                 },
                 child: Row(
                   children: [
-                    Text(sortingOptions.keys.elementAt(index)),
+                    Text(tr(sortingOptions.keys.elementAt(index))),
                     if (_selectedSortingOption ==
                         sortingOptions.keys.elementAt(index))
                       Row(
@@ -989,7 +978,7 @@ class _AddSearchTabState extends State<AddSearchTab> {
               controller: _searchController,
               onSubmitted: (value) => onSearch(apiService),
               decoration: InputDecoration(
-                labelText: 'Search for ${widget.type.pluralName.toLowerCase()}',
+                labelText: 'Buscar ${widget.type.pluralName.toLowerCase()}',
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.search),
                   onPressed: () => onSearch(apiService),
@@ -1012,13 +1001,13 @@ class _AddSearchTabState extends State<AddSearchTab> {
                             title: Text(result.rawTitle),
                             subtitle: Text(
                               result.searchResultType == SearchTabType.torrent
-                                  ? 'Size: ${result.readableSize} | Seeders: ${result.lastKnownSeeders}'
+                                  ? 'Tamaño: ${result.readableSize} | Seeders: ${result.lastKnownSeeders}'
                                   : result.readableSize,
                             ),
                             trailing: // cached indicator
                             result.cached == true
                                 ? Tooltip(
-                                    message: 'Cached result',
+                                    message: 'En caché',
                                     child: const Icon(
                                       Icons.cached_sharp,
                                       color: Colors.green,
@@ -1045,7 +1034,7 @@ class _AddSearchTabState extends State<AddSearchTab> {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text(
-                                        '${result.searchResultType.name} added successfully',
+                                        '${result.searchResultType.name} añadido',
                                       ),
                                     ),
                                   );
@@ -1053,7 +1042,7 @@ class _AddSearchTabState extends State<AddSearchTab> {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text(
-                                        'Failed to add ${result.searchResultType.name.toLowerCase()}: ${response.detailOrUnknown}',
+                                        'No se pudo añadir: ${response.detailOrUnknown}',
                                       ),
                                     ),
                                   );
@@ -1067,7 +1056,7 @@ class _AddSearchTabState extends State<AddSearchTab> {
                   : Center(
                       child: Text(
                         _hasSearched
-                            ? 'No results found for "${_searchController.text}"'
+                            ? 'Sin resultados para "${_searchController.text}"'
                             : '',
                         style: const TextStyle(fontSize: 16),
                       ),

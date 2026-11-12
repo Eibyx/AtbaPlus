@@ -1,4 +1,5 @@
 import 'package:atba/screens/tools/tool_kit.dart';
+import 'package:atba/l10n.dart';
 import 'package:atba/widgets/motion.dart';
 import 'package:flutter/material.dart';
 import 'package:torbox_api/torbox_api.dart';
@@ -19,23 +20,23 @@ class _RssFeedsPageState extends State<RssFeedsPage> {
   Widget build(BuildContext context) {
     return ApiLoader<List<RssFeedData>>(
       key: _loaderKey,
-      title: 'RSS feeds',
+      title: 'Feeds RSS',
       load: (api) => api.rssFeeds.getRssFeeds(),
       isEmpty: (d) => d.isEmpty,
       emptyState: EmptyState(
         icon: Icons.rss_feed_rounded,
-        title: 'No RSS feeds yet',
-        message: 'TorBox can watch RSS feeds and automatically add matching torrents, NZBs or web links.',
+        title: 'Aún no hay feeds RSS',
+        message: 'TorBox puede vigilar feeds RSS y añadir automáticamente los torrents, NZB o enlaces que coincidan.',
         action: FilledButton.icon(
           onPressed: () => _editFeed(context),
           icon: const Icon(Icons.add_rounded),
-          label: const Text('Add feed'),
+          label: const Text('Añadir feed'),
         ),
       ),
       fab: (context, reload) => FloatingActionButton.extended(
         onPressed: () => _editFeed(context),
         icon: const Icon(Icons.add_rounded),
-        label: const Text('Add feed'),
+        label: const Text('Añadir feed'),
       ),
       builder: (context, feeds, reload) => [
         SliverList.builder(
@@ -56,7 +57,7 @@ class _RssFeedsPageState extends State<RssFeedsPage> {
   Future<void> _editFeed(BuildContext context, [RssFeedData? feed]) async {
     final saved = await showToolSheet<bool>(
       context,
-      title: feed == null ? 'Add RSS feed' : 'Edit feed',
+      title: feed == null ? 'Añadir feed RSS' : 'Editar feed',
       builder: (_) => _FeedForm(feed: feed),
     );
     if (saved == true) _reload();
@@ -125,34 +126,37 @@ class _FeedCard extends StatelessWidget {
                     case 'edit':
                       onEdit();
                     case 'update':
-                      await _control(context, 'update', 'Feed check queued');
+                      await _control(context, 'update', 'Comprobación en cola');
                     case 'pause':
-                      await _control(context, 'pause', 'Feed paused');
+                      await _control(context, 'pause', 'Feed pausado');
                     case 'resume':
-                      await _control(context, 'resume', 'Feed resumed');
+                      await _control(context, 'resume', 'Feed reanudado');
                     case 'delete':
                       final ok = await confirmAction(
                         context,
-                        title: 'Delete "${feed.name}"?',
-                        message: 'This RSS feed will stop being checked.',
-                        confirmLabel: 'Delete',
+                        title: '¿Borrar "${feed.name}"?',
+                        message: 'Este feed dejará de comprobarse.',
+                        confirmLabel: 'Borrar',
                       );
                       if (ok && context.mounted) {
-                        await _control(context, 'delete', 'Feed deleted');
+                        await _control(context, 'delete', 'Feed borrado');
                       }
                   }
                 },
                 itemBuilder: (_) => [
-                  const PopupMenuItem(value: 'edit', child: Text('Edit')),
+                  const PopupMenuItem(value: 'edit', child: Text('Editar')),
                   const PopupMenuItem(
                     value: 'update',
-                    child: Text('Check now'),
+                    child: Text('Comprobar ahora'),
                   ),
                   if (_paused)
-                    const PopupMenuItem(value: 'resume', child: Text('Resume'))
+                    const PopupMenuItem(
+                      value: 'resume',
+                      child: Text('Reanudar'),
+                    )
                   else
-                    const PopupMenuItem(value: 'pause', child: Text('Pause')),
-                  const PopupMenuItem(value: 'delete', child: Text('Delete')),
+                    const PopupMenuItem(value: 'pause', child: Text('Pausar')),
+                  const PopupMenuItem(value: 'delete', child: Text('Borrar')),
                 ],
               ),
             ],
@@ -163,17 +167,17 @@ class _FeedCard extends StatelessWidget {
             runSpacing: 6,
             children: [
               StatusPill(
-                label: feed.status ?? feed.state ?? 'unknown',
+                label: tr(feed.status ?? feed.state ?? 'unknown'),
                 color: _paused ? null : const Color(0xFF34D399),
               ),
               if (feed.type != null) StatusPill(label: feed.type!),
               if (feed.scanInterval != null)
                 StatusPill(
-                  label: 'every ${feed.scanInterval} min',
+                  label: 'cada ${feed.scanInterval} min',
                   icon: Icons.schedule_rounded,
                 ),
               StatusPill(
-                label: 'checked ${timeAgo(feed.lastChecked)}',
+                label: 'revisado ${timeAgo(feed.lastChecked)}',
                 icon: Icons.history_rounded,
               ),
             ],
@@ -215,7 +219,11 @@ class _FeedFormState extends State<_FeedForm> {
   Future<void> _save() async {
     if (_name.text.trim().isEmpty ||
         (widget.feed == null && _url.text.trim().isEmpty)) {
-      showToast(context, 'Name and URL are required', type: ToastType.error);
+      showToast(
+        context,
+        'Nombre y URL son obligatorios',
+        type: ToastType.error,
+      );
       return;
     }
     setState(() => _saving = true);
@@ -248,7 +256,7 @@ class _FeedFormState extends State<_FeedForm> {
               torrentSeeding: _seeding,
               passCheck: _passCheck,
             ),
-      successMessage: widget.feed == null ? 'Feed added' : 'Feed updated',
+      successMessage: widget.feed == null ? 'Feed añadido' : 'Feed actualizado',
     );
     if (!mounted) return;
     setState(() => _saving = false);
@@ -264,7 +272,7 @@ class _FeedFormState extends State<_FeedForm> {
           padding: kSheetFieldGap,
           child: TextField(
             controller: _name,
-            decoration: const InputDecoration(labelText: 'Name'),
+            decoration: const InputDecoration(labelText: 'Nombre'),
           ),
         ),
         if (widget.feed == null)
@@ -273,7 +281,7 @@ class _FeedFormState extends State<_FeedForm> {
             child: TextField(
               controller: _url,
               keyboardType: TextInputType.url,
-              decoration: const InputDecoration(labelText: 'Feed URL'),
+              decoration: const InputDecoration(labelText: 'URL del feed'),
             ),
           ),
         Padding(
@@ -293,8 +301,8 @@ class _FeedFormState extends State<_FeedForm> {
           child: TextField(
             controller: _doRegex,
             decoration: const InputDecoration(
-              labelText: 'Include regex',
-              hintText: 'e.g. 1080p.*WEB',
+              labelText: 'Regex para incluir',
+              hintText: 'p. ej. 1080p.*WEB',
             ),
           ),
         ),
@@ -303,8 +311,8 @@ class _FeedFormState extends State<_FeedForm> {
           child: TextField(
             controller: _dontRegex,
             decoration: const InputDecoration(
-              labelText: 'Exclude regex',
-              hintText: 'e.g. CAM|TS',
+              labelText: 'Regex para excluir',
+              hintText: 'p. ej. CAM|TS',
             ),
           ),
         ),
@@ -317,7 +325,7 @@ class _FeedFormState extends State<_FeedForm> {
                   controller: _interval,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
-                    labelText: 'Scan every (min)',
+                    labelText: 'Revisar cada (min)',
                   ),
                 ),
               ),
@@ -327,7 +335,7 @@ class _FeedFormState extends State<_FeedForm> {
                   controller: _olderThan,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
-                    labelText: 'Skip older than (days)',
+                    labelText: 'Ignorar más antiguos que (días)',
                   ),
                 ),
               ),
@@ -343,18 +351,18 @@ class _FeedFormState extends State<_FeedForm> {
               items: const [
                 DropdownMenuItem(
                   value: 1,
-                  child: Text('Auto (account default)'),
+                  child: Text('Automático (según la cuenta)'),
                 ),
-                DropdownMenuItem(value: 2, child: Text('Always seed')),
-                DropdownMenuItem(value: 3, child: Text("Don't seed")),
+                DropdownMenuItem(value: 2, child: Text('Seed siempre')),
+                DropdownMenuItem(value: 3, child: Text("Sin seed")),
               ],
               onChanged: (v) => setState(() => _seeding = v ?? 1),
             ),
           ),
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
-          title: const Text('Skip first scan'),
-          subtitle: const Text("Don't add items that are already in the feed"),
+          title: const Text('Saltar primera revisión'),
+          subtitle: const Text("No añadir lo que ya está en el feed"),
           value: _passCheck,
           onChanged: (v) => setState(() => _passCheck = v),
         ),
@@ -371,7 +379,7 @@ class _FeedFormState extends State<_FeedForm> {
                     child: CircularProgressIndicator(strokeWidth: 2.4),
                   )
                 : Text(
-                    widget.feed == null ? 'Add feed' : 'Save changes',
+                    widget.feed == null ? 'Añadir feed' : 'Guardar cambios',
                     key: const ValueKey('t'),
                   ),
           ),
@@ -393,8 +401,8 @@ class RssFeedItemsPage extends StatelessWidget {
       isEmpty: (d) => d.isEmpty,
       emptyState: const EmptyState(
         icon: Icons.inbox_rounded,
-        title: 'No items yet',
-        message: 'Items matched by this feed will appear here.',
+        title: 'Aún no hay elementos',
+        message: 'Aquí aparecerá lo que coincida con este feed.',
       ),
       builder: (context, items, reload) => [
         SliverList.builder(
@@ -410,7 +418,7 @@ class RssFeedItemsPage extends StatelessWidget {
               index: i,
               child: SurfaceCard(
                 onTap: () =>
-                    copyToClipboard(context, it.link, label: 'Link copied'),
+                    copyToClipboard(context, it.link, label: 'Enlace copiado'),
                 child: Row(
                   children: [
                     IconBadge(

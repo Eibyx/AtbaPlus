@@ -22,7 +22,7 @@ class DownloadsSearchBar extends StatelessWidget {
         focusNode: focusNode,
         onTapOutside: (_) => focusNode?.unfocus(),
         decoration: InputDecoration(
-          hintText: 'Search...',
+          hintText: 'Buscar…',
           suffixIcon: IconButton(
             icon: const Icon(Icons.clear),
             onPressed: () => {

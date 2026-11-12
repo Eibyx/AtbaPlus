@@ -45,7 +45,7 @@ class _SpeedtestPageState extends State<SpeedtestPage> {
   Future<void> _loadServers() async {
     final api = torboxApiOf(context);
     if (api == null) {
-      setState(() => _error = 'Add your API key first.');
+      setState(() => _error = 'Primero añade tu clave API.');
       return;
     }
     try {
@@ -115,7 +115,7 @@ class _SpeedtestPageState extends State<SpeedtestPage> {
         if (received > 0) {
           showToast(
             context,
-            'Average ${_mbps.toStringAsFixed(1)} Mbps from ${server.name}',
+            'Media de ${_mbps.toStringAsFixed(1)} Mbps desde ${server.name}',
             type: ToastType.success,
           );
         }
@@ -128,14 +128,14 @@ class _SpeedtestPageState extends State<SpeedtestPage> {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     return ToolScaffold(
-      title: 'Speed test',
+      title: 'Test de velocidad',
       slivers: [
         if (_error != null)
           SliverFillRemaining(
             hasScrollBody: false,
             child: EmptyState(
               icon: Icons.speed_rounded,
-              title: 'Speed test unavailable',
+              title: 'Test de velocidad no disponible',
               message: _error,
             ),
           )
@@ -185,7 +185,9 @@ class _SpeedtestPageState extends State<SpeedtestPage> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      _peak > 0 ? 'Peak ${_peak.toStringAsFixed(1)} Mbps' : ' ',
+                      _peak > 0
+                          ? 'Pico de ${_peak.toStringAsFixed(1)} Mbps'
+                          : ' ',
                       style: theme.textTheme.bodySmall,
                     ),
                     const SizedBox(height: 12),
@@ -202,7 +204,7 @@ class _SpeedtestPageState extends State<SpeedtestPage> {
                               ? Icons.stop_rounded
                               : Icons.play_arrow_rounded,
                         ),
-                        label: Text(_running ? 'Stop' : 'Start test'),
+                        label: Text(_running ? 'Detener' : 'Empezar'),
                       ),
                     ),
                   ],
@@ -210,7 +212,7 @@ class _SpeedtestPageState extends State<SpeedtestPage> {
               ),
             ),
           ),
-          const SliverToBoxAdapter(child: SectionHeader(title: 'Server')),
+          const SliverToBoxAdapter(child: SectionHeader(title: 'Servidor')),
           if (_servers == null)
             const SliverToBoxAdapter(
               child: Padding(
@@ -251,7 +253,10 @@ class _SpeedtestPageState extends State<SpeedtestPage> {
                           ),
                         ),
                         if (s.closest)
-                          StatusPill(label: 'Closest', color: scheme.primary),
+                          StatusPill(
+                            label: 'Más cercano',
+                            color: scheme.primary,
+                          ),
                       ],
                     ),
                   ),

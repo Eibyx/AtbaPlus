@@ -44,7 +44,7 @@ class _ServiceStatusPageState extends State<ServiceStatusPage> {
   Widget build(BuildContext context) {
     return ApiLoader<ServiceStatsData>(
       key: _key,
-      title: 'Service status',
+      title: 'Estado del servicio',
       load: (api) => api.general.getStats(),
       builder: (context, s, reload) => [
         SliverToBoxAdapter(
@@ -64,7 +64,7 @@ class _ServiceStatusPageState extends State<ServiceStatusPage> {
                     .fade(begin: 0.5, end: 1),
                 const SizedBox(width: 14),
                 const Expanded(
-                  child: Text('TorBox is up · refreshes every 15s'),
+                  child: Text('TorBox funciona · se actualiza cada 15 s'),
                 ),
               ],
             ),
@@ -73,42 +73,42 @@ class _ServiceStatusPageState extends State<ServiceStatusPage> {
         StatGrid(
           tiles: [
             StatTile(
-              label: 'Users',
+              label: 'Usuarios',
               value: _num(s.totalUsers),
               icon: Icons.people_rounded,
               color: const Color(0xFF60A5FA),
             ),
             StatTile(
               index: 1,
-              label: 'Servers',
+              label: 'Servidores',
               value: _num(s.totalServers),
               icon: Icons.dns_rounded,
               color: const Color(0xFFA78BFA),
             ),
             StatTile(
               index: 2,
-              label: 'Active torrents',
+              label: 'Torrents activos',
               value: _num(s.activeTorrents),
               icon: Icons.hub_rounded,
               color: const Color(0xFFFBBF24),
             ),
             StatTile(
               index: 3,
-              label: 'Total downloads',
+              label: 'Descargas totales',
               value: _num(s.totalDownloads),
               icon: Icons.download_done_rounded,
               color: const Color(0xFF34D399),
             ),
             StatTile(
               index: 4,
-              label: 'Download speed',
+              label: 'Velocidad de bajada',
               value: '${getReadableSize(s.downloadSpeed ?? 0)}/s',
               icon: Icons.south_rounded,
               color: const Color(0xFF22D3EE),
             ),
             StatTile(
               index: 5,
-              label: 'Upload speed',
+              label: 'Velocidad de subida',
               value: '${getReadableSize(s.uploadSpeed ?? 0)}/s',
               icon: Icons.north_rounded,
               color: const Color(0xFFF472B6),
@@ -124,7 +124,7 @@ class _ServiceStatusPageState extends State<ServiceStatusPage> {
             if (s.totalPlaybacks != null)
               StatTile(
                 index: 7,
-                label: 'Playbacks',
+                label: 'Reproducciones',
                 value: _num(s.totalPlaybacks),
                 icon: Icons.movie_rounded,
                 color: const Color(0xFF4ADE80),
@@ -132,7 +132,7 @@ class _ServiceStatusPageState extends State<ServiceStatusPage> {
             if (s.p95FetchTime != null)
               StatTile(
                 index: 8,
-                label: 'p95 fetch time',
+                label: 'Tiempo de carga p95',
                 value: '${s.p95FetchTime} ms',
                 icon: Icons.timer_rounded,
                 color: const Color(0xFF818CF8),
@@ -140,7 +140,7 @@ class _ServiceStatusPageState extends State<ServiceStatusPage> {
             if (s.p95StreamTime != null)
               StatTile(
                 index: 9,
-                label: 'p95 stream start',
+                label: 'Inicio de stream p95',
                 value: '${s.p95StreamTime} ms',
                 icon: Icons.timelapse_rounded,
                 color: const Color(0xFF2DD4BF),

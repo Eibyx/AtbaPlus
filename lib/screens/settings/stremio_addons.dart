@@ -56,26 +56,26 @@ class _StemioAddonsSettingsWidgetState
   @override
   Widget build(BuildContext context) {
     return ExpandableSettingsTile(
-      title: "Stremio Addons",
+      title: "Addons de Stremio",
       leading: const Icon(Icons.language),
       children: [
         CheckboxSettingsTile(
           leading: const Icon(Icons.add_box),
-          title: "Torbox Addon",
+          title: "Addon de TorBox",
           settingKey: Constants.torboxAddonEnabled,
         ),
         SimpleSettingsTile(
           title: "Torrentio",
           leading: const Icon(Icons.language),
           child: SettingsScreen(
-            title: 'Torrentio settings',
+            title: 'Ajustes de Torrentio',
             children: <Widget>[
               CheckboxSettingsTile(
-                title: "Enable torrentio",
+                title: "Activar Torrentio",
                 settingKey: Constants.torrentioEnabled,
                 childrenIfEnabled: [
                   ExpandableSettingsTile(
-                    title: "Providers",
+                    title: "Proveedores",
                     children: [
                       for (var provider in widget.providers.keys)
                         CheckboxSettingsTile(
@@ -86,18 +86,18 @@ class _StemioAddonsSettingsWidgetState
                     ],
                   ),
                   DropDownSettingsTile<int>(
-                    title: "Sort by",
+                    title: "Ordenar por",
                     settingKey: Constants.torrentioSortBy,
                     values: const <int, String>{
-                      1: 'By quality then seeders',
-                      2: 'By quality then size',
-                      3: 'By seeders',
-                      4: 'By size',
+                      1: 'Por calidad y luego seeders',
+                      2: 'Por calidad y luego tamaño',
+                      3: 'Por seeders',
+                      4: 'Por tamaño',
                     },
                     selected: 1,
                   ),
                   ExpandableSettingsTile(
-                    title: "Priority foreign language",
+                    title: "Idioma prioritario",
                     children: [
                       for (var language
                           in widget.languages.keys.toList()..sort())
@@ -109,7 +109,7 @@ class _StemioAddonsSettingsWidgetState
                     ],
                   ),
                   ExpandableSettingsTile(
-                    title: "Exclude qualities",
+                    title: "Excluir calidades",
                     children: [
                       for (var quality in widget.qualities.keys)
                         CheckboxSettingsTile(
@@ -122,27 +122,26 @@ class _StemioAddonsSettingsWidgetState
                   ),
                   TextInputSettingsTile(
                     settingKey: Constants.torrentioMaxResultsPerQuality,
-                    title: 'Max results per quality',
+                    title: 'Máx. resultados por calidad',
                     keyboardType: TextInputType.number,
-                    helperText: 'Leave empty for unlimited. ',
+                    helperText: 'Vacío = sin límite. ',
                     validator: (value) {
                       if (value == null || value.isEmpty) return null;
                       if (int.tryParse(value) == null) {
-                        return 'Invalid number';
+                        return 'Número no válido';
                       }
                       return null;
                     },
                   ),
                   TextInputSettingsTile(
                     settingKey: Constants.torrentioVideoSizeLimit,
-                    title: 'Video size limit',
+                    title: 'Límite de tamaño de vídeo',
                     keyboardType: TextInputType.number,
-                    helperText:
-                        'Leave empty for no limit; use a comma to have a different size for movies and series e.g. 5GB ; 800MB ; 10GB,2GB',
+                    helperText: 'Vacío = sin límite; usa una coma para separar películas y series, p. ej. 5GB ; 800MB ; 10GB,2GB',
                     validator: (value) {
                       if (value == null || value.isEmpty) return null;
                       if (!RegExp(r'^([0-9.]*(?:MB|GB),?)+$').hasMatch(value)) {
-                        return 'Invalid size';
+                        return 'Tamaño no válido';
                       }
                       return null;
                     },
@@ -199,12 +198,12 @@ class _StemioAddonsSettingsWidgetState
                         builder: (dialogContext) {
                           final manifestController = TextEditingController();
                           return AlertDialog(
-                            title: const Text("Enter addon manifest url"),
+                            title: const Text("URL del manifest del addon"),
                             content: SingleChildScrollView(
                               child: TextField(
                                 controller: manifestController,
                                 decoration: const InputDecoration(
-                                  hintText: "Enter URL...",
+                                  hintText: "Escribe la URL…",
                                 ),
                               ),
                             ),
@@ -213,7 +212,7 @@ class _StemioAddonsSettingsWidgetState
                                 onPressed: () {
                                   Navigator.of(dialogContext).pop();
                                 },
-                                child: const Text("Cancel"),
+                                child: const Text("Cancelar"),
                               ),
                               ElevatedButton(
                                 onPressed: () async {
@@ -222,7 +221,7 @@ class _StemioAddonsSettingsWidgetState
                                   );
                                   final message = addonManifest.hasParsingError
                                       ? "Error: ${addonManifest.errorMessage}"
-                                      : "Added ${addonManifest.name} successfully";
+                                      : "${addonManifest.name} añadido";
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text(
@@ -248,7 +247,7 @@ class _StemioAddonsSettingsWidgetState
                                   }
                                   Navigator.of(dialogContext).pop();
                                 },
-                                child: const Text("Submit"),
+                                child: const Text("Añadir"),
                               ),
                             ],
                           );
@@ -256,7 +255,7 @@ class _StemioAddonsSettingsWidgetState
                       );
                     },
                     icon: const Icon(Icons.add),
-                    label: const Text("Add addon"),
+                    label: const Text("Añadir addon"),
                   ),
                 ),
               ],
@@ -279,10 +278,7 @@ class ParsedAddon {
 Future<ParsedAddon> loadAddonManifest(String url) async {
   Uri? addonUrl = Uri.tryParse(url);
   if (addonUrl == null) {
-    return ParsedAddon(
-      hasParsingError: true,
-      errorMessage: "Unable to parse url",
-    );
+    return ParsedAddon(hasParsingError: true, errorMessage: "URL no válida");
   }
   try {
     final response = await http.read(addonUrl);

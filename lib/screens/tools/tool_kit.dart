@@ -27,7 +27,7 @@ Future<TorBoxResponse<T>?> runApiAction<T>(
 }) async {
   final api = torboxApiOf(context);
   if (api == null) {
-    showToast(context, 'Add your API key first', type: ToastType.error);
+    showToast(context, 'Primero añade tu clave API', type: ToastType.error);
     return null;
   }
   try {
@@ -36,14 +36,14 @@ Future<TorBoxResponse<T>?> runApiAction<T>(
     if (response.success) {
       showToast(
         context,
-        successMessage ?? response.detail ?? 'Done',
+        successMessage ?? response.detail ?? 'Listo',
         type: ToastType.success,
       );
       return response;
     }
     showToast(
       context,
-      response.detail ?? response.error ?? 'Request failed',
+      response.detail ?? response.error ?? 'La petición falló',
       type: ToastType.error,
     );
   } catch (e) {
@@ -58,7 +58,7 @@ Future<TorBoxResponse<T>?> runApiAction<T>(
 Future<void> copyToClipboard(
   BuildContext context,
   String text, {
-  String label = 'Copied to clipboard',
+  String label = 'Copiado al portapapeles',
 }) async {
   await Clipboard.setData(ClipboardData(text: text));
   if (context.mounted) showToast(context, label, type: ToastType.success);
@@ -88,7 +88,7 @@ class ToolScaffold extends StatelessWidget {
         parent: AlwaysScrollableScrollPhysics(),
       ),
       slivers: [
-        SliverAppBar.large(
+        SliverAppBar.medium(
           title: Text(title),
           actions: actions,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -150,7 +150,7 @@ class ApiLoaderState<T> extends State<ApiLoader<T>> {
     if (api == null) {
       setState(() {
         _loading = false;
-        _error = 'Add your TorBox API key in Settings to use this tool.';
+        _error = 'Añade tu clave API de TorBox en Ajustes para usar esta herramienta.';
       });
       return;
     }
@@ -167,7 +167,7 @@ class ApiLoaderState<T> extends State<ApiLoader<T>> {
           _data = null;
           _error = null;
         } else {
-          _error = response.detail ?? response.error ?? 'Request failed';
+          _error = response.detail ?? response.error ?? 'La petición falló';
         }
       });
     } catch (e) {
@@ -195,12 +195,12 @@ class ApiLoaderState<T> extends State<ApiLoader<T>> {
           hasScrollBody: false,
           child: EmptyState(
             icon: Icons.cloud_off_rounded,
-            title: 'Something went wrong',
+            title: 'Algo salió mal',
             message: _error,
             action: FilledButton.icon(
               onPressed: reload,
               icon: const Icon(Icons.refresh_rounded),
-              label: const Text('Retry'),
+              label: const Text('Reintentar'),
             ),
           ),
         ),
@@ -212,10 +212,7 @@ class ApiLoaderState<T> extends State<ApiLoader<T>> {
           hasScrollBody: false,
           child:
               widget.emptyState ??
-              const EmptyState(
-                icon: Icons.inbox_rounded,
-                title: 'Nothing here',
-              ),
+              const EmptyState(icon: Icons.inbox_rounded, title: 'No hay nada'),
         ),
       ];
     } else {
@@ -313,11 +310,12 @@ class StatTile extends StatelessWidget {
       index: index,
       child: SurfaceCard(
         margin: EdgeInsets.zero,
+        padding: const EdgeInsets.all(14),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            IconBadge(icon: icon, color: color, size: 34),
-            const SizedBox(height: 12),
+            IconBadge(icon: icon, color: color, size: 30),
             FittedBox(
               fit: BoxFit.scaleDown,
               alignment: Alignment.centerLeft,
@@ -359,7 +357,7 @@ class StatGrid extends StatelessWidget {
         crossAxisCount: MediaQuery.sizeOf(context).width > 700 ? 4 : 2,
         mainAxisSpacing: 12,
         crossAxisSpacing: 12,
-        childAspectRatio: 1.35,
+        childAspectRatio: 1.55,
         children: tiles,
       ),
     );
@@ -402,7 +400,7 @@ Future<bool> confirmAction(
   BuildContext context, {
   required String title,
   required String message,
-  String confirmLabel = 'Confirm',
+  String confirmLabel = 'Confirmar',
   bool destructive = true,
 }) async {
   final scheme = Theme.of(context).colorScheme;
@@ -414,7 +412,7 @@ Future<bool> confirmAction(
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, false),
-          child: const Text('Cancel'),
+          child: const Text('Cancelar'),
         ),
         FilledButton(
           style: destructive
@@ -448,10 +446,10 @@ String timeAgo(String? iso) {
   if (d == null) return '—';
   final diff = DateTime.now().difference(d.toLocal());
   if (diff.inDays > 30) return formatDate(iso, withTime: false);
-  if (diff.inDays > 0) return '${diff.inDays}d ago';
-  if (diff.inHours > 0) return '${diff.inHours}h ago';
-  if (diff.inMinutes > 0) return '${diff.inMinutes}m ago';
-  return 'just now';
+  if (diff.inDays > 0) return 'hace ${diff.inDays} d';
+  if (diff.inHours > 0) return 'hace ${diff.inHours} h';
+  if (diff.inMinutes > 0) return 'hace ${diff.inMinutes} min';
+  return 'ahora mismo';
 }
 
 /// Pads list items consistently.

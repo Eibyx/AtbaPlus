@@ -31,17 +31,15 @@ class ApiKeyScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              'Welcome!',
+              '¡Bienvenido!',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-            const Text('Please provide your API key to continue.'),
+            const Text('Introduce tu clave API para continuar.'),
             const SizedBox(height: 20),
             TextField(
               controller: _apiKeyController,
-              decoration: const InputDecoration(
-                labelText: 'API Key',
-              ),
+              decoration: const InputDecoration(labelText: 'Clave API'),
               obscureText: true,
               enableSuggestions: false,
               autocorrect: false,
@@ -59,9 +57,7 @@ class ApiKeyScreen extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) =>
                           !kIsWeb &&
-                              (Platform.isAndroid ||
-                                  Platform
-                                      .isIOS) // only IOS and Android have permission-based models
+                              (Platform.isAndroid || Platform.isIOS) // only IOS and Android have permission-based models
                           ? const PermissionScreen()
                           : const HomeScreen(),
                     ),
@@ -73,13 +69,13 @@ class ApiKeyScreen extends StatelessWidget {
                       content: Text(
                         apiKey.isNotEmpty
                             ? (response.detailOrUnknown)
-                            : 'API Key is required!',
+                            : '¡La clave API es obligatoria!',
                       ),
                     ),
                   );
                 }
               },
-              child: const Text('Continue'),
+              child: const Text('Continuar'),
             ),
           ],
         ),

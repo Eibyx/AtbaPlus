@@ -18,7 +18,7 @@ class ChangelogPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ApiLoader<List<ChangelogEntry>>(
-      title: 'Changelog',
+      title: 'Novedades',
       load: (api) => api.general.getChangelogsJson(),
       isEmpty: (d) => d.isEmpty,
       builder: (context, entries, reload) => [
@@ -108,7 +108,7 @@ class _ChangelogCardState extends State<_ChangelogCard> {
                       mode: LaunchMode.externalApplication,
                     ),
                     icon: const Icon(Icons.open_in_new_rounded, size: 18),
-                    label: const Text('Open'),
+                    label: const Text('Abrir'),
                   ),
                 ),
             ],

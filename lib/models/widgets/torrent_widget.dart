@@ -1,4 +1,5 @@
 import 'package:atba/config/constants.dart';
+import 'package:atba/l10n.dart';
 import 'package:atba/models/library_items/downloadable_item.dart';
 import 'package:atba/models/library_items/library_item.dart';
 import 'package:atba/models/library_items/queued_torrent.dart';
@@ -127,9 +128,9 @@ class TorrentWidget extends StatelessWidget {
   Widget _buildSubtitle(String torrentState) {
     switch (torrent.itemStatus) {
       case DownloadableItemStatus.loading:
-        return const Text('Working…');
+        return const Text('Procesando…');
       case DownloadableItemStatus.success:
-        return const Text('Done');
+        return const Text('Listo');
       case DownloadableItemStatus.error:
         return Text('Error: ${torrent.errorMessage}');
       default:
@@ -141,7 +142,7 @@ class TorrentWidget extends StatelessWidget {
               spacing: 6.0,
               runSpacing: 6.0,
               children: [
-                StatusPill(label: torrentState, color: color),
+                StatusPill(label: tr(torrentState), color: color),
                 if (torrent.ratio != 0)
                   StatusPill(
                     label: torrent.ratio.toStringAsFixed(2),
@@ -207,9 +208,9 @@ class QueuedTorrentWidget extends StatelessWidget {
   Widget _buildSubtitle() {
     switch (torrent.status) {
       case TorrentStatus.loading:
-        return const Text('Working…');
+        return const Text('Procesando…');
       case TorrentStatus.success:
-        return const Text('Done');
+        return const Text('Listo');
       case TorrentStatus.error:
         return Text('Error: ${torrent.errorMessage}');
       default:

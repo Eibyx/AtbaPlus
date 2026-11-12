@@ -71,7 +71,7 @@ class TorrentioConfig {
     'thai': '🇹🇭 Thai',
   };
 
-  static const Map<String, String> qualities = { 
+  static const Map<String, String> qualities = {
     'brremux': 'BluRay REMUX',
     'hdrall': 'HDR/HDR10+/Dolby Vision',
     'dolbyvision': 'Dolby Vision',
@@ -88,12 +88,40 @@ class TorrentioConfig {
     'unknown': 'Unknown',
   };
 
-  static final String CSPROVIDERS = providers.keys.where((key) => Settings.getValue<bool>("${Constants.keyProviderPrefix}$key") ?? false).join(',');
-  static final String CSLANGUAGES = languages.keys.where((key) => Settings.getValue<bool>("${Constants.keyLanguagePrefix}$key") ?? false).join(',');
-  static final String CSQUALITIES = qualities.keys.where((key) => Settings.getValue<bool>("${Constants.keyExcludeQualityPrefix}$key") ?? false).join(',');
-  static final String SORTBY = {1: '', 2: 'qualitysize', 3: 'seeders', 4: 'size'}[Settings.getValue<int>(Constants.torrentioSortBy) ?? 1]!;
-  static final String SIZELIMIT = Settings.getValue<String>(Constants.torrentioVideoSizeLimit) ?? '';
-  static final String NUMBERPERQUALITYLIMIT = Settings.getValue<String>(Constants.torrentioMaxResultsPerQuality) ?? ''; // TODO: validate
+  static final String CSPROVIDERS = providers.keys
+      .where(
+        (key) =>
+            Settings.getValue<bool>("${Constants.keyProviderPrefix}$key") ??
+            false,
+      )
+      .join(',');
+  static final String CSLANGUAGES = languages.keys
+      .where(
+        (key) =>
+            Settings.getValue<bool>("${Constants.keyLanguagePrefix}$key") ??
+            false,
+      )
+      .join(',');
+  static final String CSQUALITIES = qualities.keys
+      .where(
+        (key) =>
+            Settings.getValue<bool>(
+              "${Constants.keyExcludeQualityPrefix}$key",
+            ) ??
+            false,
+      )
+      .join(',');
+  static final String SORTBY = {
+    1: '',
+    2: 'qualitysize',
+    3: 'seeders',
+    4: 'size',
+  }[Settings.getValue<int>(Constants.torrentioSortBy) ?? 1]!;
+  static final String SIZELIMIT =
+      Settings.getValue<String>(Constants.torrentioVideoSizeLimit) ?? '';
+  static final String NUMBERPERQUALITYLIMIT =
+      Settings.getValue<String>(Constants.torrentioMaxResultsPerQuality) ??
+      ''; // TODO: validate
 }
 
 enum SearchType { movie, tv }

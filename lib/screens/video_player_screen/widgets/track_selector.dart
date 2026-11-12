@@ -62,13 +62,13 @@ class _PlayerDropdownButtonState extends State<PlayerDropdownButton> {
         _buildMenuItem(
           track: _getNoTrack(),
           currentTrack: currentTrack,
-          label: "None",
+          label: "Ninguno",
           subLabel: null,
         ),
         _buildMenuItem(
           track: _getAutoTrack(),
           currentTrack: currentTrack,
-          label: "Auto",
+          label: "Automático",
           subLabel: null,
         ),
         if (tracks.length > 2)
@@ -150,7 +150,7 @@ class _PlayerDropdownButtonState extends State<PlayerDropdownButton> {
       } catch (_) {}
     }
 
-    lang = lang ?? "Unknown";
+    lang = lang ?? "Desconocido";
     // Capitalize first letter
     if (lang.isNotEmpty) lang = lang[0].toUpperCase() + lang.substring(1);
 
