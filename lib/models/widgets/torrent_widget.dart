@@ -1,17 +1,23 @@
-import 'dart:ui';
-
 import 'package:atba/config/constants.dart';
 import 'package:atba/models/library_items/downloadable_item.dart';
 import 'package:atba/models/library_items/library_item.dart';
 import 'package:atba/models/library_items/queued_torrent.dart';
 import 'package:atba/models/library_items/torrent.dart';
 import 'package:atba/models/widgets/downloadable_item_detail_screen.dart';
+import 'package:atba/models/widgets/library_item_card.dart';
+import 'package:atba/widgets/motion.dart';
 import 'package:atba/services/library_page_state.dart';
 import 'package:atba/services/torrent_name_parser.dart';
 import 'package:atba/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 import 'package:provider/provider.dart';
+
+const _blue = Color(0xFF60A5FA);
+const _green = Color(0xFF34D399);
+const _amber = Color(0xFFFBBF24);
+const _grey = Color(0xFF9CA3AF);
+const _red = Color(0xFFF87171);
 
 class TorrentWidget extends StatelessWidget {
   final Torrent torrent;
@@ -51,33 +57,33 @@ class TorrentWidget extends StatelessWidget {
 
   static const Map<String, Map<String, dynamic>> torrentStatuses = {
     // TorBox
-    "downloading": {"color": Colors.blue, "icon": Icons.cloud_download},
-    "uploading": {"color": Colors.green, "icon": Icons.cloud_upload},
-    "stalled (no seeds)": {"color": Colors.yellow, "icon": Icons.stop},
-    "paused": {"color": Colors.grey, "icon": Icons.pause},
-    "completed": {"color": Colors.green, "icon": Icons.check_circle},
-    "cached": {"color": Colors.grey, "icon": Icons.cached},
-    "metaDL": {"color": Colors.yellow, "icon": Icons.arrow_circle_down},
-    "checkingResumeData": {"color": Colors.yellow, "icon": Icons.stop},
+    "downloading": {"color": _blue, "icon": Icons.cloud_download_rounded},
+    "uploading": {"color": _green, "icon": Icons.cloud_upload_rounded},
+    "stalled (no seeds)": {"color": _amber, "icon": Icons.stop_rounded},
+    "paused": {"color": _grey, "icon": Icons.pause_rounded},
+    "completed": {"color": _green, "icon": Icons.check_circle_rounded},
+    "cached": {"color": _grey, "icon": Icons.cached_rounded},
+    "metaDL": {"color": _amber, "icon": Icons.arrow_circle_down_rounded},
+    "checkingResumeData": {"color": _amber, "icon": Icons.stop_rounded},
     // Qbittorrent
-    "error": {"color": Colors.red, "icon": Icons.error},
-    "missingFiles": {"color": Colors.red, "icon": Icons.error},
-    "pausedUP": {"color": Colors.yellow, "icon": Icons.pause},
-    "queuedUP": {"color": Colors.yellow, "icon": Icons.arrow_circle_down},
+    "error": {"color": _red, "icon": Icons.error_rounded},
+    "missingFiles": {"color": _red, "icon": Icons.error_rounded},
+    "pausedUP": {"color": _amber, "icon": Icons.pause_rounded},
+    "queuedUP": {"color": _amber, "icon": Icons.arrow_circle_down_rounded},
     "uploading (no peers)": {
-      "color": Colors.yellow,
-      "icon": Icons.cloud_upload,
+      "color": _amber,
+      "icon": Icons.cloud_upload_rounded,
     },
-    "stalledUP": {"color": Colors.yellow, "icon": Icons.stop},
-    "checkingUP": {"color": Colors.yellow, "icon": Icons.stop},
-    "forcedUP": {"color": Colors.yellow, "icon": Icons.stop},
-    "allocating": {"color": Colors.yellow, "icon": Icons.stop},
-    "pausedDL": {"color": Colors.yellow, "icon": Icons.pause},
-    "queuedDL": {"color": Colors.yellow, "icon": Icons.arrow_circle_down},
-    "stalledDL": {"color": Colors.yellow, "icon": Icons.stop},
-    "checkingDL": {"color": Colors.yellow, "icon": Icons.stop},
-    "forcedDL": {"color": Colors.yellow, "icon": Icons.stop},
-    "moving": {"color": Colors.yellow, "icon": Icons.stop},
+    "stalledUP": {"color": _amber, "icon": Icons.stop_rounded},
+    "checkingUP": {"color": _amber, "icon": Icons.stop_rounded},
+    "forcedUP": {"color": _amber, "icon": Icons.stop_rounded},
+    "allocating": {"color": _amber, "icon": Icons.stop_rounded},
+    "pausedDL": {"color": _amber, "icon": Icons.pause_rounded},
+    "queuedDL": {"color": _amber, "icon": Icons.arrow_circle_down_rounded},
+    "stalledDL": {"color": _amber, "icon": Icons.stop_rounded},
+    "checkingDL": {"color": _amber, "icon": Icons.stop_rounded},
+    "forcedDL": {"color": _amber, "icon": Icons.stop_rounded},
+    "moving": {"color": _amber, "icon": Icons.stop_rounded},
   };
 
   @override
@@ -92,7 +98,7 @@ class TorrentWidget extends StatelessWidget {
       item: torrent,
       leading: _buildLeading(torrentState),
       subtitle: _buildSubtitle(torrentState),
-      trailing: Text(getReadableSize(torrent.size)),
+      trailing: getReadableSize(torrent.size),
       onDetailTap: () => Navigator.push(
         context,
         MaterialPageRoute(
@@ -105,15 +111,15 @@ class TorrentWidget extends StatelessWidget {
   Widget _buildLeading(String torrentState) {
     switch (torrent.itemStatus) {
       case DownloadableItemStatus.loading:
-        return const CircularProgressIndicator();
+        return const StatusBadge(icon: Icons.sync, color: _blue, loading: true);
       case DownloadableItemStatus.success:
-        return const Icon(Icons.check, color: Colors.green);
+        return const StatusBadge(icon: Icons.check_rounded, color: _green);
       case DownloadableItemStatus.error:
-        return const Icon(Icons.error, color: Colors.red);
+        return const StatusBadge(icon: Icons.error_rounded, color: _red);
       default:
-        return Icon(
-          torrentStatuses[torrentState]?['icon'] ?? Icons.question_mark,
-          color: torrentStatuses[torrentState]?['color'] ?? Colors.grey,
+        return StatusBadge(
+          icon: torrentStatuses[torrentState]?['icon'] ?? Icons.question_mark,
+          color: torrentStatuses[torrentState]?['color'] ?? _grey,
         );
     }
   }
@@ -121,49 +127,54 @@ class TorrentWidget extends StatelessWidget {
   Widget _buildSubtitle(String torrentState) {
     switch (torrent.itemStatus) {
       case DownloadableItemStatus.loading:
-        return const Text('Loading...');
+        return const Text('Working…');
       case DownloadableItemStatus.success:
-        return const Text('Success');
+        return const Text('Done');
       case DownloadableItemStatus.error:
         return Text('Error: ${torrent.errorMessage}');
       default:
+        final color = torrentStatuses[torrentState]?['color'] as Color?;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Wrap(
-              spacing: 4.0,
-              runSpacing: 4.0,
+              spacing: 6.0,
+              runSpacing: 6.0,
               children: [
-                _buildStatusChip(torrentState),
+                StatusPill(label: torrentState, color: color),
                 if (torrent.ratio != 0)
-                  _buildStatusChip(torrent.ratio.toStringAsFixed(2)),
+                  StatusPill(
+                    label: torrent.ratio.toStringAsFixed(2),
+                    icon: Icons.swap_vert_rounded,
+                  ),
                 if (torrent.active)
-                  _buildStatusChip(
-                    formatTimeDifference(
+                  StatusPill(
+                    label: formatTimeDifference(
                       DateTime.now().difference(torrent.createdAt),
                     ),
+                    icon: Icons.schedule_rounded,
                   ),
               ],
             ),
             if (torrentState.toLowerCase() == 'downloading')
               Padding(
-                padding: const EdgeInsets.only(top: 4.0),
-                child: LinearProgressIndicator(value: torrent.progress),
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: AnimatedProgressBar(
+                        value: torrent.progress,
+                        color: _blue,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Text('${(torrent.progress * 100).toStringAsFixed(0)}%'),
+                  ],
+                ),
               ),
           ],
         );
     }
-  }
-
-  Widget _buildStatusChip(String label) {
-    return Container(
-      padding: const EdgeInsets.all(4.0),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      child: Text(label),
-    );
   }
 }
 
@@ -180,43 +191,43 @@ class QueuedTorrentWidget extends StatelessWidget {
     );
   }
 
-  Widget? _buildLeading() {
+  Widget _buildLeading() {
     switch (torrent.status) {
       case TorrentStatus.loading:
-        return const CircularProgressIndicator();
+        return const StatusBadge(icon: Icons.sync, color: _blue, loading: true);
       case TorrentStatus.success:
-        return const Icon(Icons.check, color: Colors.green);
+        return const StatusBadge(icon: Icons.check_rounded, color: _green);
       case TorrentStatus.error:
-        return const Icon(Icons.error, color: Colors.red);
+        return const StatusBadge(icon: Icons.error_rounded, color: _red);
       default:
-        return null;
+        return const StatusBadge(icon: Icons.queue_rounded, color: _amber);
     }
   }
 
-  Widget? _buildSubtitle() {
+  Widget _buildSubtitle() {
     switch (torrent.status) {
       case TorrentStatus.loading:
-        return const Text('Loading...');
+        return const Text('Working…');
       case TorrentStatus.success:
-        return const Text('Success');
+        return const Text('Done');
       case TorrentStatus.error:
         return Text('Error: ${torrent.errorMessage}');
       default:
-        return null;
+        return const StatusPill(label: 'queued', color: _amber);
     }
   }
 }
 
 class _BaseTorrentWidget extends StatelessWidget {
   final LibraryItem item;
-  final Widget? leading;
+  final Widget leading;
   final Widget? subtitle;
-  final Widget? trailing;
+  final String? trailing;
   final VoidCallback? onDetailTap;
 
   const _BaseTorrentWidget({
     required this.item,
-    this.leading,
+    required this.leading,
     this.subtitle,
     this.trailing,
     this.onDetailTap,
@@ -240,34 +251,22 @@ class _BaseTorrentWidget extends StatelessWidget {
       }
     }
 
-    return Container(
-      color: isSelected ? Theme.of(context).highlightColor : Colors.transparent,
-      child: ListTile(
-        leading: leading,
-        title: ImageFiltered(
-          enabled: isCensored,
-          imageFilter: ImageFilter.blur(
-            sigmaX: 6,
-            sigmaY: 6,
-            tileMode: TileMode.decal,
-          ),
-          child: SelectableText(
-            Settings.getValue<bool>(
-                  Constants.useTorrentNameParsing,
-                  defaultValue: false,
-                )!
-                ? parse(item.name)['title']
-                : item.name,
-            onTap: handleTap,
-          ),
-        ),
-        subtitle: subtitle,
-        trailing: trailing,
-        onTap: handleTap,
-        onLongPress: () {
-          state.startSelection(item);
-        },
-      ),
+    return LibraryItemCard(
+      title:
+          Settings.getValue<bool>(
+            Constants.useTorrentNameParsing,
+            defaultValue: false,
+          )!
+          ? parse(item.name)['title']
+          : item.name,
+      censored: isCensored,
+      selected: isSelected,
+      selecting: state.isSelecting,
+      leading: leading,
+      subtitle: subtitle,
+      trailing: trailing,
+      onTap: handleTap,
+      onLongPress: () => state.startSelection(item),
     );
   }
 }

@@ -136,9 +136,6 @@ class _SearchBarState extends State<SearchBar> {
         controller: _controller,
         decoration: InputDecoration(
           hintText: 'Search...',
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
           prefixIcon: const Icon(Icons.search),
         ),
         onSubmitted: (query) {

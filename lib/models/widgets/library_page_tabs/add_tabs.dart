@@ -42,7 +42,6 @@ class _AddWebDownloadsTabState extends State<AddWebDownloadsTab> {
               decoration: const InputDecoration(
                 labelText: 'URLs',
                 hintText: 'http://example.com/file1.zip\nhttp://example.com/file2.rar',
-                border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 16),
@@ -50,7 +49,6 @@ class _AddWebDownloadsTabState extends State<AddWebDownloadsTab> {
               controller: passwordController,
               decoration: const InputDecoration(
                 labelText: 'Password (optional)',
-                border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 24),
@@ -160,7 +158,6 @@ class _AddMagnetTabState extends State<AddMagnetTab> {
               maxLines: 5,
               decoration: const InputDecoration(
                 labelText: 'Magnet Links',
-                border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 24),
@@ -375,7 +372,6 @@ class _AddNzbLinkTabState extends State<AddNzbLinkTab> {
               controller: linkController,
               decoration: const InputDecoration(
                 labelText: 'NZB File URL',
-                border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 16),
@@ -383,7 +379,6 @@ class _AddNzbLinkTabState extends State<AddNzbLinkTab> {
               controller: passwordController,
               decoration: const InputDecoration(
                 labelText: 'Password (optional)',
-                border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 24),
@@ -475,7 +470,6 @@ class _AddNzbFileTabState extends State<AddNzbFileTab> {
               controller: passwordController,
               decoration: const InputDecoration(
                 labelText: 'Password (optional)',
-                border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 16),

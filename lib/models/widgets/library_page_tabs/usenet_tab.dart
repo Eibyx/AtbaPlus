@@ -1,6 +1,7 @@
 import 'package:atba/models/widgets/downloadable_item_widget.dart';
 import 'package:atba/models/widgets/search_bar.dart';
 import 'package:atba/services/library_page_state.dart';
+import 'package:atba/widgets/motion.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -70,11 +71,15 @@ class UsenetTab extends StatelessWidget {
                   return state.usenetDownloads.isNotEmpty
                       ? ListView.builder(
                           physics: const ScrollPhysics(),
+                          padding: const EdgeInsets.only(top: 8, bottom: 96),
                           itemCount: state.filteredSortedUsenetDownloads.length,
                           itemBuilder: (context, index) {
                             final download =
                                 state.filteredSortedUsenetDownloads[index];
-                            return DownloadableItemWidget(item: download);
+                            return EntranceAnimation(
+                              index: index < 10 ? index : 0,
+                              child: DownloadableItemWidget(item: download),
+                            );
                           },
                         )
                       : const Center(

@@ -17,6 +17,9 @@ import 'package:atba/screens/library_page.dart';
 import 'package:atba/screens/watch_page.dart';
 import 'package:atba/screens/settings/settings_page.dart';
 import 'package:atba/config/constants.dart';
+import 'package:atba/screens/tools/tools_page.dart';
+import 'package:atba/theme/app_theme.dart';
+import 'package:atba/widgets/motion.dart';
 import 'package:torbox_api/torbox_api.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -26,7 +29,6 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiValueChangeObserver(
       cacheKeysWithDefaultValues: {
-        Constants.useMaterial3: true,
         Constants.useTorboxFontFamily: false,
         Constants.theme: "system",
         Constants.useCustomColorTheme: false,
@@ -66,21 +68,21 @@ class HomeScreen extends StatelessWidget {
               );
             }
 
+            final fontFamily = values[Constants.useTorboxFontFamily]
+                ? 'torbox-dotted-all'
+                : null; // null = the device's system font
             return MaterialApp(
               title: 'TorBox',
-              theme: ThemeData(
-                colorScheme: lightColorScheme,
-                useMaterial3: values[Constants.useMaterial3],
-                fontFamily: (values[Constants.useTorboxFontFamily])
-                    ? 'torbox-dotted-all'
-                    : null,
+              debugShowCheckedModeBanner: false,
+              theme: AppTheme.build(
+                seedScheme: lightColorScheme,
+                brightness: Brightness.light,
+                fontFamily: fontFamily,
               ),
-              darkTheme: ThemeData(
-                colorScheme: darkColorScheme,
-                useMaterial3: values[Constants.useMaterial3],
-                fontFamily: (values[Constants.useTorboxFontFamily])
-                    ? 'torbox-dotted-all'
-                    : null,
+              darkTheme: AppTheme.build(
+                seedScheme: darkColorScheme,
+                brightness: Brightness.dark,
+                fontFamily: fontFamily,
               ),
               themeMode:
                   ThemeMode.values[[
@@ -146,9 +148,8 @@ class _MyHomePageState extends State<MyHomePage> {
             const SnackBar(content: Text('Torrent added successfully!')),
           );
         } else {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(response.detailOrUnknown)));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(response.detailOrUnknown)));
         }
       } else if (file.type == SharedMediaType.text) {
         final uri = Uri.tryParse(file.path);
@@ -243,13 +244,38 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  static final List<Widget> _pages = <Widget>[
+  static const List<Widget> _pages = <Widget>[
     LibraryPage(),
     WatchPage(),
+    ToolsPage(),
     SettingsPage(),
   ];
 
+  static const _navItems = <FloatingNavItem>[
+    FloatingNavItem(
+      icon: Icons.folder_outlined,
+      selectedIcon: Icons.folder_rounded,
+      label: 'Library',
+    ),
+    FloatingNavItem(
+      icon: Icons.play_circle_outline_rounded,
+      selectedIcon: Icons.play_circle_rounded,
+      label: 'Watch',
+    ),
+    FloatingNavItem(
+      icon: Icons.grid_view_outlined,
+      selectedIcon: Icons.grid_view_rounded,
+      label: 'Tools',
+    ),
+    FloatingNavItem(
+      icon: Icons.tune_outlined,
+      selectedIcon: Icons.tune_rounded,
+      label: 'Settings',
+    ),
+  ];
+
   void _onItemTapped(int index) {
+    if (index == _selectedIndex) return;
     setState(() {
       _selectedIndex = index;
     });
@@ -276,24 +302,26 @@ class _MyHomePageState extends State<MyHomePage> {
         SystemNavigator.pop();
       },
       child: Scaffold(
-        body: _pages[_selectedIndex],
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.library_books_outlined),
-              label: 'Library',
+        body: AnimatedSwitcher(
+          duration: AppMotion.medium,
+          switchInCurve: AppMotion.emphasized,
+          switchOutCurve: Curves.easeIn,
+          transitionBuilder: (child, animation) => FadeTransition(
+            opacity: animation,
+            child: ScaleTransition(
+              scale: Tween<double>(begin: 0.97, end: 1).animate(animation),
+              child: child,
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.play_arrow),
-              label: 'Watch',
-            ),
-            BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'More'),
-          ],
+          ),
+          child: KeyedSubtree(
+            key: ValueKey(_selectedIndex),
+            child: _pages[_selectedIndex],
+          ),
+        ),
+        bottomNavigationBar: FloatingNavBar(
           currentIndex: _selectedIndex,
-          selectedItemColor: Theme.of(context).colorScheme.primary,
-          unselectedItemColor: Theme.of(context).colorScheme.onSurfaceVariant,
-          backgroundColor: Theme.of(context).colorScheme.surface,
           onTap: _onItemTapped,
+          items: _navItems,
         ),
       ),
     );

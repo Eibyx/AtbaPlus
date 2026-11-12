@@ -17,6 +17,9 @@ import 'package:iconsx_plus/iconsx_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:atba/services/library_page_state.dart';
 import 'package:icon_craft/icon_craft.dart';
+import 'package:atba/theme/app_theme.dart';
+import 'package:atba/widgets/motion.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class LibraryPage extends StatefulWidget {
   const LibraryPage({super.key});
@@ -79,35 +82,74 @@ class _LibraryPageState extends State<LibraryPage>
             },
             child: Scaffold(
               appBar: AppBar(
-                title: (state.isSelecting)
-                    ? Text("${state.selectedItems.length} selected")
-                    : null,
-                bottom: TabBar(
-                  controller: _tabController,
-                  tabs: [
-                    Tab(text: 'Torrents'),
-                    Tab(text: 'Web'),
-                    Tab(text: 'Usenet'),
-                  ],
+                title: AnimatedSwitcher(
+                  duration: AppMotion.medium,
+                  transitionBuilder: (child, anim) => FadeTransition(
+                    opacity: anim,
+                    child: SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(0, 0.4),
+                        end: Offset.zero,
+                      ).animate(anim),
+                      child: child,
+                    ),
+                  ),
+                  child: Text(
+                    state.isSelecting
+                        ? "${state.selectedItems.length} selected"
+                        : 'Library',
+                    key: ValueKey(
+                      state.isSelecting
+                          ? 'sel${state.selectedItems.length}'
+                          : 'title',
+                    ),
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.6,
+                    ),
+                  ),
+                ),
+                bottom: PreferredSize(
+                  preferredSize: const Size.fromHeight(56),
+                  child: Container(
+                    height: 44,
+                    margin: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      borderRadius: BorderRadius.circular(AppRadius.md + 2),
+                      border: Border.all(
+                        color: Theme.of(context).colorScheme.outlineVariant,
+                      ),
+                    ),
+                    child: TabBar(
+                      controller: _tabController,
+                      tabs: const [
+                        Tab(text: 'Torrents'),
+                        Tab(text: 'Web'),
+                        Tab(text: 'Usenet'),
+                      ],
+                    ),
+                  ),
                 ),
                 actions: [
                   if (state.isSelecting)
                     Row(
                       children: [
                         IconButton(
-                          icon: Icon(Icons.select_all),
+                          icon: Icon(Icons.select_all_rounded),
                           onPressed: () {
                             state.selectAllItems();
                           },
                         ),
                         IconButton(
-                          icon: Icon(Icons.flip),
+                          icon: Icon(Icons.flip_rounded),
                           onPressed: () {
                             state.invertSelection();
                           },
                         ),
                         IconButton(
-                          icon: Icon(Icons.clear),
+                          icon: Icon(Icons.clear_rounded),
                           onPressed: () {
                             state.clearSelection();
                           },
@@ -127,74 +169,90 @@ class _LibraryPageState extends State<LibraryPage>
                 ],
               ),
               bottomNavigationBar: state.isSelecting
-                  ? BottomAppBar(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          if (state.selectedItems.any(
-                            (item) => item is QueuedTorrent,
-                          )) ...[
-                            IconButton(
-                              icon: Icon(Icons.play_arrow),
-                              onPressed: () {
-                                state.resumeSelectedItems();
-                              },
+                  ? Glass(
+                          child: SafeArea(
+                            top: false,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 6),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  if (state.selectedItems.any(
+                                    (item) => item is QueuedTorrent,
+                                  )) ...[
+                                    IconButton(
+                                      icon: Icon(Icons.play_arrow_rounded),
+                                      onPressed: () {
+                                        state.resumeSelectedItems();
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: Icon(Icons.delete_rounded),
+                                      onPressed: () {
+                                        state.deleteSelectedItems();
+                                      },
+                                    ),
+                                  ] else ...[
+                                    IconButton(
+                                      icon: Icon(Icons.stop_rounded),
+                                      onPressed: () {
+                                        state.stopSelectedItems();
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: Icon(Icons.refresh_rounded),
+                                      onPressed: () {
+                                        state.reannounceSelectedItems();
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: Icon(Icons.delete_rounded),
+                                      onPressed: () {
+                                        state.deleteSelectedItems();
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: Icon(Icons.download_rounded),
+                                      onPressed: () async {
+                                        if (Settings.getValue<String>(
+                                              Constants.folderPath,
+                                            ) ==
+                                            null) {
+                                          bool granted =
+                                              await showPermissionDialog(
+                                                context,
+                                              );
+                                          if (granted) {
+                                            state.downloadSelectedItems();
+                                          } else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text(
+                                                      'Permission not granted. Cannot proceed with download.',
+                                                    ),
+                                                  ),
+                                                );
+                                          }
+                                        } else {
+                                          state.downloadSelectedItems();
+                                        }
+                                      },
+                                    ),
+                                  ],
+                                ],
+                              ),
                             ),
-                            IconButton(
-                              icon: Icon(Icons.delete),
-                              onPressed: () {
-                                state.deleteSelectedItems();
-                              },
-                            ),
-                          ] else ...[
-                            IconButton(
-                              icon: Icon(Icons.stop),
-                              onPressed: () {
-                                state.stopSelectedItems();
-                              },
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.refresh),
-                              onPressed: () {
-                                state.reannounceSelectedItems();
-                              },
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.delete),
-                              onPressed: () {
-                                state.deleteSelectedItems();
-                              },
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.download),
-                              onPressed: () async {
-                                if (Settings.getValue<String>(
-                                      Constants.folderPath,
-                                    ) ==
-                                    null) {
-                                  bool granted = await showPermissionDialog(
-                                    context,
-                                  );
-                                  if (granted) {
-                                    state.downloadSelectedItems();
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                          'Permission not granted. Cannot proceed with download.',
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                } else {
-                                  state.downloadSelectedItems();
-                                }
-                              },
-                            ),
-                          ],
-                        ],
-                      ),
-                    )
+                          ),
+                        )
+                        .animate()
+                        .slideY(
+                          begin: 1,
+                          duration: AppMotion.medium,
+                          curve: AppMotion.emphasized,
+                        )
+                        .fadeIn()
                   : null,
               floatingActionButton: state.isSelecting
                   ? const SizedBox.shrink()
@@ -335,8 +393,16 @@ class _LibraryPageState extends State<LibraryPage>
 
                         return SpeedDial(
                           shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(16)),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(AppRadius.lg),
+                            ),
                           ),
+                          elevation: 0,
+                          overlayOpacity: 0.35,
+                          spacing: 8,
+                          spaceBetweenChildren: 8,
+                          animationCurve: Curves.easeOutBack,
+                          childrenButtonSize: const Size(52, 52),
                           activeChild: const Icon(Icons.close),
                           direction: SpeedDialDirection.up,
                           children: getSpeedDialChildren(),
@@ -433,7 +499,7 @@ class _LibraryPageState extends State<LibraryPage>
 
   IconButton buildRefreshIcon(LibraryPageState state) {
     return IconButton(
-      icon: const Icon(Icons.refresh),
+      icon: const Icon(Icons.refresh_rounded),
       tooltip: "Refresh",
       onPressed: () {
         state.torrentRefreshIndicatorKey.currentState?.show();

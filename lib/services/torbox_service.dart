@@ -59,6 +59,10 @@ class TorboxAPI {
     _syncApi();
   }
 
+  /// Direct access to the typed TorBox API client (null without an API key).
+  /// Used by the Tools screens, which need the full typed API surface.
+  torbox.TorboxApi? get api => _api;
+
   /// Whether an API key is loaded and [_api] is ready to use.
   bool get hasApiKey => _api != null;
 
