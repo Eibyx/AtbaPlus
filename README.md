@@ -40,7 +40,7 @@ This fork installs as **ATBA+** (`com.eibyx.atbaplus`), so it can live next to t
    storeFile=upload-keystore.jks
    ```
    Keep `upload-keystore.jks` and its password safe — losing them means users must reinstall.
-3. Actions → **Build & Release** → *Run workflow* → enter a version (e.g. `0.13.0`). APKs are published to Releases as `v0.13.0`. Pushing a `v*` tag does the same.
+3. Actions → **Build & Release** → *Run workflow* → enter a version (e.g. `0.13.0`). The arm64-v8a APK is published to Releases as `v0.13.0`. Pushing a `v*` tag does the same.
 
 ## Contributing
 I'm always happy to review pull requests, and it would be particularly helpful if people could resolve issues on iOS and Android TV which I cannot debug. If you can't contribute code, suggestions and bug reports are also welcome, as are design suggestions; I am not a great UI/UX designer, so any suggestions on that front are appreciated.

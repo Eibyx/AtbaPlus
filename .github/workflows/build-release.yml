@@ -25,7 +25,7 @@ concurrency:
 
 jobs:
   build-and-release-android:
-    name: Build and Release Android APKs
+    name: Build and Release Android APK (arm64-v8a)
     runs-on: ubuntu-latest
 
     steps:
@@ -71,18 +71,14 @@ jobs:
           VERSION=${RELEASE_TAG#v}
           sed -i "s/^version:.*/version: $VERSION+2001/" pubspec.yaml
 
-      - name: Build split APKs
-        run: flutter build apk --release --split-per-abi
-      - name: Build universal APK
-        run: flutter build apk --release
+      # Only arm64-v8a (armv8) is published.
+      - name: Build arm64-v8a APK
+        run: flutter build apk --release --split-per-abi --target-platform android-arm64
 
-      - name: Rename APKs
+      - name: Rename APK
         run: |
           cd build/app/outputs/flutter-apk
           mv app-arm64-v8a-release.apk atbaplus-${{ env.RELEASE_TAG }}-arm64-v8a.apk
-          mv app-armeabi-v7a-release.apk atbaplus-${{ env.RELEASE_TAG }}-armeabi-v7a.apk
-          mv app-x86_64-release.apk atbaplus-${{ env.RELEASE_TAG }}-x86_64.apk
-          mv app-release.apk atbaplus-${{ env.RELEASE_TAG }}-universal.apk
 
 
       - name: Upload APKs
@@ -96,56 +92,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: build/app/outputs/flutter-apk/atbaplus-*.apk
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag_name: ${{ env.RELEASE_TAG }}
-          target_commitish: ${{ github.sha }}
-          draft: false
-          prerelease: false
-
-  build-and-release-ios:
-    name: Build and Release iOS IPA
-    runs-on: macos-latest
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: 3.47.5
-
-      - name: Get Dependencies
-        run: flutter pub get
-
-      - name: Run build_runner
-        run: flutter pub run build_runner build --delete-conflicting-outputs
-
-      - name: Update Version in pubspec.yaml
-        run: |
-          VERSION=${RELEASE_TAG#v}
-          sed -i '' "s/^version:.*/version: $VERSION/" pubspec.yaml
-
-      - name: Build iOS IPA
-        run: |
-          flutter build ios --release --no-codesign
-          cd build/ios/iphoneos
-          mkdir Payload
-          cd Payload
-          ln -s ../Runner.app
-          cd ..
-          zip -r atbaplus-${{ env.RELEASE_TAG }}.ipa Payload
-
-      - name: Upload IPA
-        uses: actions/upload-artifact@v4
-        with:
-          path: build/ios/iphoneos/atbaplus-${{ env.RELEASE_TAG }}.ipa
-          name: ipa
-
-      - name: Release IPA
-        uses: softprops/action-gh-release@v1
-        with:
-          files: build/ios/iphoneos/atbaplus-${{ env.RELEASE_TAG }}.ipa
           token: ${{ secrets.GITHUB_TOKEN }}
           tag_name: ${{ env.RELEASE_TAG }}
           target_commitish: ${{ github.sha }}
