@@ -4,9 +4,23 @@ on:
   push:
     tags:
       - v*
+  # Lets a release be cut by hand from the Actions tab (e.g. on a fork that
+  # does not run release-please). The tag is created by the release step.
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release, e.g. 0.13.0 (tag will be v<version>)"
+        required: true
+
+permissions:
+  contents: write
+
+env:
+  # Tag name for both trigger types: the pushed tag, or v<input version>.
+  RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && format('v{0}', inputs.version) || github.ref_name }}
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref_name }}
+  group: ${{ github.workflow }}-${{ github.event_name == 'workflow_dispatch' && inputs.version || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
@@ -29,14 +43,22 @@ jobs:
           distribution: "temurin"
           java-version: "17"
 
+      # Signing is optional: without these secrets the APKs are signed with a
+      # throwaway debug key (installable, but not upgradable across releases).
       - name: Decode Keystore
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
         run: |
-          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/upload-keystore.jks
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > android/app/upload-keystore.jks
+          echo "$ANDROID_KEYSTORE_PROPERTIES" > android/key.properties
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PROPERTIES: ${{ secrets.ANDROID_KEYSTORE_PROPERTIES }}
 
-      - name: Configure Android Keystore
-        run: echo "${{ secrets.ANDROID_KEYSTORE_PROPERTIES }}" > android/key.properties
+      - name: Warn about unsigned release
+        if: env.ANDROID_KEYSTORE_BASE64 == ''
+        run: echo "::warning::ANDROID_KEYSTORE_BASE64 is not set; APKs are signed with a temporary debug key and will not update over previous installs."
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
 
       - name: Get Dependencies
         run: flutter pub get
@@ -46,7 +68,7 @@ jobs:
 
       - name: Update Version in pubspec.yaml
         run: |
-          VERSION=${GITHUB_REF#refs/tags/v}
+          VERSION=${RELEASE_TAG#v}
           sed -i "s/^version:.*/version: $VERSION+2001/" pubspec.yaml
 
       - name: Build split APKs
@@ -57,25 +79,26 @@ jobs:
       - name: Rename APKs
         run: |
           cd build/app/outputs/flutter-apk
-          mv app-arm64-v8a-release.apk atba-${{ github.ref_name }}-arm64-v8a.apk
-          mv app-armeabi-v7a-release.apk atba-${{ github.ref_name }}-armeabi-v7a.apk
-          mv app-x86_64-release.apk atba-${{ github.ref_name }}-x86_64.apk
-          mv app-release.apk atba-${{ github.ref_name }}-universal.apk
+          mv app-arm64-v8a-release.apk atbaplus-${{ env.RELEASE_TAG }}-arm64-v8a.apk
+          mv app-armeabi-v7a-release.apk atbaplus-${{ env.RELEASE_TAG }}-armeabi-v7a.apk
+          mv app-x86_64-release.apk atbaplus-${{ env.RELEASE_TAG }}-x86_64.apk
+          mv app-release.apk atbaplus-${{ env.RELEASE_TAG }}-universal.apk
 
 
       - name: Upload APKs
         uses: actions/upload-artifact@v4
         with:
-          path: build/app/outputs/flutter-apk/atba-*.apk
+          path: build/app/outputs/flutter-apk/atbaplus-*.apk
           name: apks
 
 
       - name: Release APKs
         uses: softprops/action-gh-release@v1
         with:
-          files: build/app/outputs/flutter-apk/atba-*.apk
+          files: build/app/outputs/flutter-apk/atbaplus-*.apk
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag_name: ${{ github.ref_name }}
+          tag_name: ${{ env.RELEASE_TAG }}
+          target_commitish: ${{ github.sha }}
           draft: false
           prerelease: false
 
@@ -100,7 +123,7 @@ jobs:
 
       - name: Update Version in pubspec.yaml
         run: |
-          VERSION=${GITHUB_REF#refs/tags/v}
+          VERSION=${RELEASE_TAG#v}
           sed -i '' "s/^version:.*/version: $VERSION/" pubspec.yaml
 
       - name: Build iOS IPA
@@ -111,19 +134,20 @@ jobs:
           cd Payload
           ln -s ../Runner.app
           cd ..
-          zip -r atba-${{ github.ref_name }}.ipa Payload
+          zip -r atbaplus-${{ env.RELEASE_TAG }}.ipa Payload
 
       - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
-          path: build/ios/iphoneos/atba-${{ github.ref_name }}.ipa
+          path: build/ios/iphoneos/atbaplus-${{ env.RELEASE_TAG }}.ipa
           name: ipa
 
       - name: Release IPA
         uses: softprops/action-gh-release@v1
         with:
-          files: build/ios/iphoneos/atba-${{ github.ref_name }}.ipa
+          files: build/ios/iphoneos/atbaplus-${{ env.RELEASE_TAG }}.ipa
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag_name: ${{ github.ref_name }}
+          tag_name: ${{ env.RELEASE_TAG }}
+          target_commitish: ${{ github.sha }}
           draft: false
           prerelease: false

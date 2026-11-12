@@ -9,6 +9,12 @@ def keystorePropertiesFile = rootProject.file('key.properties')
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
+// Release builds are signed with the upload keystore when one is configured
+// (android/key.properties + the .jks it points to). Without one — e.g. a fork
+// with no signing secrets — they fall back to the debug key so the build
+// still succeeds.
+def hasReleaseKeystore = keystoreProperties['storeFile'] &&
+        file(keystoreProperties['storeFile']).exists()
 
 android {
     namespace = "com.torbox.atba"
@@ -21,7 +27,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.torbox.atba"
+        applicationId = "com.eibyx.atbaplus"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
@@ -31,17 +37,19 @@ android {
     }
 
     signingConfigs {
-        release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
+        if (hasReleaseKeystore) {
+            release {
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+            }
         }
     }
 
     buildTypes {
         release {
-            signingConfig signingConfigs.release
+            signingConfig hasReleaseKeystore ? signingConfigs.release : signingConfigs.debug
         }
         debug {
             applicationIdSuffix ".debug"

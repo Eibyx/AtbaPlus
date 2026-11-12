@@ -23,6 +23,25 @@ Another TorBox App.
 | macOS | ❌ Untested | - |
 | Linux | ❌ Untested | - |
 
+## Releasing (ATBA+ fork)
+This fork installs as **ATBA+** (`com.eibyx.atbaplus`), so it can live next to the official ATBA app.
+
+1. Enable GitHub Actions on the fork (Actions tab).
+2. *(Recommended, once)* Create a signing key and add it as repository secrets — without it every release is signed with a throwaway debug key and **won't update over the previous install**:
+   ```sh
+   keytool -genkey -v -keystore upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+   base64 -w0 upload-keystore.jks   # -> secret ANDROID_KEYSTORE_BASE64
+   ```
+   Secret `ANDROID_KEYSTORE_PROPERTIES`:
+   ```
+   storePassword=<password>
+   keyPassword=<password>
+   keyAlias=upload
+   storeFile=upload-keystore.jks
+   ```
+   Keep `upload-keystore.jks` and its password safe — losing them means users must reinstall.
+3. Actions → **Build & Release** → *Run workflow* → enter a version (e.g. `0.13.0`). APKs are published to Releases as `v0.13.0`. Pushing a `v*` tag does the same.
+
 ## Contributing
 I'm always happy to review pull requests, and it would be particularly helpful if people could resolve issues on iOS and Android TV which I cannot debug. If you can't contribute code, suggestions and bug reports are also welcome, as are design suggestions; I am not a great UI/UX designer, so any suggestions on that front are appreciated.
 
