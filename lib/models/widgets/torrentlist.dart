@@ -30,7 +30,7 @@ class _TorrentsListState extends State<TorrentsList> {
           ),
         ..._section(
           context,
-          title: 'Queued',
+          title: 'En cola',
           count: '${state.queuedTorrents.length}',
           expanded: _queuedExpanded,
           onToggle: () => setState(() => _queuedExpanded = !_queuedExpanded),
@@ -40,7 +40,7 @@ class _TorrentsListState extends State<TorrentsList> {
         ),
         ..._section(
           context,
-          title: 'Active',
+          title: 'Activos',
           count:
               state.filteredSortedActiveTorrents.length ==
                   state.activeTorrents.length
@@ -54,7 +54,7 @@ class _TorrentsListState extends State<TorrentsList> {
         ),
         ..._section(
           context,
-          title: 'Inactive',
+          title: 'Inactivos',
           count:
               state.filteredSortedInactiveTorrents.length ==
                   state.inactiveTorrents.length

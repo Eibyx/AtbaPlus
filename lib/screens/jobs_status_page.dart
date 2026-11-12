@@ -1,4 +1,5 @@
 import 'package:atba/models/torbox_api_response.dart';
+import 'package:atba/l10n.dart';
 import 'package:atba/services/jobs_update_service.dart';
 import 'package:atba/services/torbox_service.dart';
 import 'package:atba/utils.dart';
@@ -58,7 +59,7 @@ class _JobsStatusPageState extends State<JobsStatusPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Jobs Status'),
+        title: const Text('Trabajos de integración'),
         actions: _isSelecting
             ? [_buildDeleteIcon(), _buildFilterButton()]
             : [_buildFilterButton()],
@@ -66,7 +67,7 @@ class _JobsStatusPageState extends State<JobsStatusPage> {
       body: _jobs == null
           ? const Center(child: CircularProgressIndicator())
           : _jobs!.isEmpty
-          ? const Center(child: Text('No jobs found.'))
+          ? const Center(child: Text('No hay trabajos.'))
           : ListView.builder(
               itemCount: _jobs!.length,
               itemBuilder: (context, index) {
@@ -199,7 +200,7 @@ class _JobsStatusPageState extends State<JobsStatusPage> {
                   controlller.open();
                 }
               },
-              tooltip: "Sort downloads",
+              tooltip: "Ordenar",
             );
           },
       menuChildren: List<MenuItemButton>.generate(
@@ -219,7 +220,7 @@ class _JobsStatusPageState extends State<JobsStatusPage> {
           },
           child: Row(
             children: [
-              Text(_sortingFunctions.keys.elementAt(index)),
+              Text(tr(_sortingFunctions.keys.elementAt(index))),
               if (_selectedSortingOption ==
                   _sortingFunctions.keys.elementAt(index))
                 Row(

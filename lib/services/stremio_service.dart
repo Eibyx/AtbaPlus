@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -18,7 +19,7 @@ extension SearchTypeExtension on SearchType {
 class StremioRequests with ChangeNotifier {
   Map<String, List<Map<String, dynamic>>> searchResults = {
     "movie": [],
-    "series": []
+    "series": [],
   };
   bool isLoading = false;
   bool hasSearched = false;
@@ -42,7 +43,7 @@ class StremioRequests with ChangeNotifier {
           Uri.parse(
             "https://v3-cinemeta.strem.io/catalog/${SearchType.tv.name}/top/search=${Uri.encodeComponent(query)}.json",
           ),
-        )
+        ),
       ]);
 
       final http.Response movieResponse = responses[0];
@@ -52,7 +53,7 @@ class StremioRequests with ChangeNotifier {
       final seriesData = jsonDecode(seriesResponse.body);
       searchResults = {
         "movie": List<Map<String, dynamic>>.from(movieData['metas'] ?? []),
-        "series": List<Map<String, dynamic>>.from(seriesData['metas'] ?? [])
+        "series": List<Map<String, dynamic>>.from(seriesData['metas'] ?? []),
       };
     } catch (e) {
       print("Error fetching search results: $e");

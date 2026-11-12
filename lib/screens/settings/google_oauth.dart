@@ -43,15 +43,15 @@ class _GoogleDriveIntegrationSectionState
       title: "Google Drive",
       leading: Icon(Icons.drive_file_move),
       subtitle: (googleToken == null || googleToken!.isEmpty)
-          ? "Not connected"
-          : "Connected",
+          ? "No conectado"
+          : "Conectado",
       children: [
         if (!kIsWeb) ...[
           ListTile(
             title: Text(
               (googleToken == null || googleToken!.isEmpty)
-                  ? "Connect Google Drive"
-                  : "Reconnect Google Drive",
+                  ? "Conectar Google Drive"
+                  : "Reconectar Google Drive",
             ),
             leading: const Icon(Icons.drive_file_move),
             onTap: () async {
@@ -91,13 +91,17 @@ class _GoogleDriveIntegrationSectionState
                                   );
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                      content: Text('Google Drive token saved'),
+                                      content: Text(
+                                        'Token de Google Drive guardado',
+                                      ),
                                     ),
                                   );
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                      content: Text('Failed to get token'),
+                                      content: Text(
+                                        'No se pudo obtener el token',
+                                      ),
                                     ),
                                   );
                                 }
@@ -118,21 +122,21 @@ class _GoogleDriveIntegrationSectionState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Manual token',
+                'Token manual',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               TextField(
                 controller: widget.googleTokenController,
                 decoration: const InputDecoration(
-                  labelText: 'Paste Google token here',
+                  labelText: 'Pega aquí el token de Google',
                 ),
                 onSubmitted: (value) async {
                   if (value.isNotEmpty) {
                     await widget.apiService.saveGoogleToken(value, "");
                     _onTokenChanged(value);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Token saved")),
+                      const SnackBar(content: Text("Token guardado")),
                     );
                   }
                 },
@@ -148,21 +152,23 @@ class _GoogleDriveIntegrationSectionState
                     _onTokenChanged(value);
 
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Token saved")),
+                      const SnackBar(content: Text("Token guardado")),
                     );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Token cannot be empty")),
+                      const SnackBar(
+                        content: Text("El token no puede estar vacío"),
+                      ),
                     );
                   }
                 },
-                child: const Text('Save token'),
+                child: const Text('Guardar token'),
               ),
             ],
           ),
         ),
         ListTile(
-          title: const Text("Get token manually"),
+          title: const Text("Obtener token manualmente"),
           subtitle: const Text(
             "Opens the authentication page in your browser. After authenticating, you will be redirected to a success page. Copy the token from the URL and paste it in the field above.",
           ),
@@ -174,28 +180,28 @@ class _GoogleDriveIntegrationSectionState
               await launchUrl(url);
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Could not open browser")),
+                const SnackBar(content: Text("No se pudo abrir el navegador")),
               );
             }
           },
         ),
         if (googleToken != null && googleToken!.isNotEmpty) ...[
           ListTile(
-            title: const Text("Copy token"),
+            title: const Text("Copiar token"),
             leading: const Icon(Icons.copy),
             onTap: () async {
               await Clipboard.setData(
                 ClipboardData(text: googleToken as String),
               );
               if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Token copied to clipboard')),
-                );
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(const SnackBar(content: Text('Token copiado')));
               }
             },
           ),
           ListTile(
-            title: const Text("Delete token"),
+            title: const Text("Borrar token"),
             leading: const Icon(Icons.delete),
             onTap: () async {
               await widget.apiService.deleteGoogleToken();
@@ -203,7 +209,7 @@ class _GoogleDriveIntegrationSectionState
               if (context.mounted) {
                 ScaffoldMessenger.of(
                   context,
-                ).showSnackBar(const SnackBar(content: Text('Token deleted')));
+                ).showSnackBar(const SnackBar(content: Text('Token borrado')));
               }
             },
           ),

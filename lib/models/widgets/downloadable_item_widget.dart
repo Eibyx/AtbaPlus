@@ -1,4 +1,5 @@
 import 'package:atba/models/library_items/downloadable_item.dart';
+import 'package:atba/l10n.dart';
 import 'package:atba/models/widgets/downloadable_item_detail_screen.dart';
 import 'package:atba/models/widgets/library_item_card.dart';
 import 'package:atba/widgets/motion.dart';
@@ -74,14 +75,14 @@ class DownloadableItemWidget extends StatelessWidget {
         loading: item.itemStatus == DownloadableItemStatus.loading,
       ),
       subtitle: switch (item.itemStatus) {
-        DownloadableItemStatus.loading => const Text('Working…'),
+        DownloadableItemStatus.loading => const Text('Procesando…'),
         DownloadableItemStatus.error => Text(
-          item.errorMessage ?? 'Error loading item',
+          item.errorMessage ?? 'Error al cargar',
         ),
-        DownloadableItemStatus.success => const Text('Done'),
+        DownloadableItemStatus.success => const Text('Listo'),
         _ => Align(
           alignment: Alignment.centerLeft,
-          child: StatusPill(label: item.downloadState, color: color),
+          child: StatusPill(label: tr(item.downloadState), color: color),
         ),
       },
       trailing: getReadableSize(item.size),

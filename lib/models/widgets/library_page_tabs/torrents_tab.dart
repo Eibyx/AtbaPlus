@@ -7,7 +7,9 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 RefreshIndicator buildTorrentsTab(
-    LibraryPageState state, BuildContext context) {
+  LibraryPageState state,
+  BuildContext context,
+) {
   return RefreshIndicator(
     key: state.torrentRefreshIndicatorKey,
     onRefresh: () async {
@@ -17,10 +19,7 @@ RefreshIndicator buildTorrentsTab(
     },
     child: ScrollConfiguration(
       behavior: ScrollConfiguration.of(context).copyWith(
-        dragDevices: {
-          PointerDeviceKind.touch,
-          PointerDeviceKind.mouse,
-        },
+        dragDevices: {PointerDeviceKind.touch, PointerDeviceKind.mouse},
       ),
       child: Column(
         children: [
@@ -32,30 +31,39 @@ RefreshIndicator buildTorrentsTab(
                   final data = snapshot.data as Map<String, dynamic>;
                   if (data.containsKey("success") && data["success"] != true) {
                     return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Center(
-                            child: Column(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Center(
+                        child: Column(
                           children: [
-                            Text('Failed to fetch data: ${data["detail"]}',
-                                style: const TextStyle(color: Colors.red)),
+                            Text(
+                              'No se pudieron cargar los datos: ${data["detail"]}',
+                              style: const TextStyle(color: Colors.red),
+                            ),
                             data["stackTrace"] != null
                                 ? ElevatedButton(
-                                    child: const Text('Copy stack trace'),
+                                    child: const Text(
+                                      'Copiar detalles del error',
+                                    ),
                                     onPressed: () {
-                                      Clipboard.setData(ClipboardData(
-                                          text: data["stackTrace"].toString()));
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
+                                      Clipboard.setData(
+                                        ClipboardData(
+                                          text: data["stackTrace"].toString(),
+                                        ),
+                                      );
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
                                         const SnackBar(
-                                          content: Text(
-                                              'Stack trace copied to clipboard'),
+                                          content: Text('Detalles copiados'),
                                         ),
                                       );
                                     },
                                   )
                                 : SizedBox(),
                           ],
-                        )));
+                        ),
+                      ),
+                    );
                   }
 
                   return state.activeTorrents.isNotEmpty ||
@@ -65,9 +73,7 @@ RefreshIndicator buildTorrentsTab(
                           value: state,
                           child: TorrentsList(),
                         )
-                      : const Center(
-                          child: Text('No torrents available'),
-                        );
+                      : const Center(child: Text('No hay torrents'));
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else {

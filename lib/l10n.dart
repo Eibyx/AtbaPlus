@@ -1,0 +1,65 @@
+/// Spanish display labels for strings that are also used as internal keys
+/// (sorting options, filters, toolbar icon ids, TorBox download states).
+/// Only the label shown on screen is translated; the stored key is unchanged.
+const Map<String, String> _labels = {
+  // Sorting
+  'Default': 'Predeterminado',
+  'A to Z': 'A → Z',
+  'Z to A': 'Z → A',
+  'Largest': 'Más grande',
+  'Smallest': 'Más pequeño',
+  'Oldest': 'Más antiguo',
+  'Newest': 'Más reciente',
+  'Most Seeders': 'Más seeders',
+  'Least Seeders': 'Menos seeders',
+  'Most Peers': 'Más peers',
+  'Least Peers': 'Menos peers',
+  'Type': 'Tipo',
+  'Progress': 'Progreso',
+  'Recently updated': 'Actualizado recientemente',
+  // Filters
+  'Download Ready': 'Listo para descargar',
+  'Uploading': 'Subiendo',
+  'Downloading': 'Descargando',
+  'Cached': 'En caché',
+  // Toolbar icons
+  'Jobs': 'Trabajos',
+  'Reload': 'Recargar',
+  'Search': 'Buscar',
+  'Sort': 'Ordenar',
+  'Filter': 'Filtrar',
+  'Blur': 'Difuminar',
+  // Download states
+  'downloading': 'descargando',
+  'uploading': 'subiendo',
+  'stalled (no seeds)': 'detenido (sin seeds)',
+  'paused': 'pausado',
+  'completed': 'completado',
+  'cached': 'en caché',
+  'metaDL': 'metadatos',
+  'checkingResumeData': 'comprobando',
+  'error': 'error',
+  'missingFiles': 'faltan archivos',
+  'pausedUP': 'pausado',
+  'queuedUP': 'en cola',
+  'uploading (no peers)': 'subiendo (sin peers)',
+  'stalledUP': 'detenido',
+  'checkingUP': 'comprobando',
+  'forcedUP': 'forzado',
+  'allocating': 'reservando espacio',
+  'pausedDL': 'pausado',
+  'queuedDL': 'en cola',
+  'stalledDL': 'detenido',
+  'checkingDL': 'comprobando',
+  'forcedDL': 'forzado',
+  'moving': 'moviendo',
+  'queued': 'en cola',
+  'active': 'activo',
+  'inactive': 'inactivo',
+  'failed': 'fallido',
+  'pending': 'pendiente',
+  'unknown': 'desconocido',
+};
+
+/// Returns the Spanish label for [key], or [key] itself if not translated.
+String tr(String key) => _labels[key] ?? _labels[key.toLowerCase()] ?? key;

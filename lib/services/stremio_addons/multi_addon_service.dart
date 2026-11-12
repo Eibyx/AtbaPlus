@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:atba/config/constants.dart';
 import 'package:atba/models/custom_addon.dart';
 import 'package:atba/services/stremio_addons/custom_addon_service.dart';
@@ -9,6 +10,7 @@ import 'package:atba/services/stremio_addons/torrentio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 import 'package:http/http.dart' as http;
+
 import '../torrentio_config.dart';
 
 class MultiStremioAddonAPI with ChangeNotifier {
@@ -92,9 +94,8 @@ class MultiStremioAddonAPI with ChangeNotifier {
       ),
     );
 
-    final Stream<http.Response> responseStream = Stream.fromFutures(
-      requests,
-    ).where((res) => res.statusCode >= 200 && res.statusCode < 300);
+    final Stream<http.Response> responseStream = Stream.fromFutures(requests)
+        .where((res) => res.statusCode >= 200 && res.statusCode < 300);
 
     bool firstReceived = false;
     final firstValueCompleter = Completer<http.Response?>();

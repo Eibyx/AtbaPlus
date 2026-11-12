@@ -11,7 +11,7 @@ class VideoPlaybackService {
   static void playURL(BuildContext context, String? url) {
     if (url == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to load stream data')),
+        const SnackBar(content: Text('No se pudo cargar el stream')),
       );
       return;
     }

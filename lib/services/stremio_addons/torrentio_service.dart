@@ -1,4 +1,5 @@
 import 'package:atba/services/stremio_addons/stremio_addon_service.dart';
+
 import '../torrentio_config.dart';
 
 class TorrentioAPI extends StremioAddonAPI {

@@ -9,6 +9,7 @@ import 'package:flutter/rendering.dart';
 // import 'package:intrinsic_size_builder/intrinsic_size_builder.dart'; // Add this import
 
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -115,7 +116,7 @@ class _DetailsPageViewState extends State<DetailsPageView>
           _isLoading = false;
         });
       } else {
-        throw Exception('Failed to load data');
+        throw Exception('No se pudieron cargar los datos');
       }
     } catch (e) {
       setState(() {
@@ -142,7 +143,7 @@ class _DetailsPageViewState extends State<DetailsPageView>
           body: _isLoading
               ? const Center(child: CircularProgressIndicator())
               : _hasError
-              ? const Center(child: Text('Failed to load data'))
+              ? const Center(child: Text('No se pudieron cargar los datos'))
               : widget.type == "movie"
               ? buildMovieDetailBody()
               : buildSeriesDetailBody(),
@@ -171,7 +172,9 @@ class _DetailsPageViewState extends State<DetailsPageView>
               controller: _tabController,
               isScrollable: true,
               tabs: _seasonData.keys.map((season) {
-                return Tab(text: season == 0 ? "Specials" : "Season $season");
+                return Tab(
+                  text: season == 0 ? "Especiales" : "Temporada $season",
+                );
               }).toList(),
             ),
           ),
@@ -227,7 +230,7 @@ class _DetailsPageViewState extends State<DetailsPageView>
   //             isScrollable: true,
   //             tabs: _seasonData.keys.map((season) {
   //               return Tab(
-  //                 text: season == 0 ? "Specials" : "Season $season",
+  //                 text: season == 0 ? "Especiales" : "Temporada $season",
   //               );
   //             }).toList(),
   //           ),
@@ -297,7 +300,7 @@ class _DetailsPageViewState extends State<DetailsPageView>
                     onPressed: () {
                       playMovie(widget.id);
                     },
-                    label: const Text('Play'),
+                    label: const Text('Reproducir'),
                     icon: const Icon(Icons.play_arrow),
                   ),
                   IconButton(
@@ -339,7 +342,7 @@ class _DetailsPageViewState extends State<DetailsPageView>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Cast:',
+                    'Reparto:',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   ..._metaData!['cast'].map<Widget>((actor) => Text(actor)),
@@ -359,13 +362,13 @@ class _DetailsPageViewState extends State<DetailsPageView>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Trailers:',
+                    'Tráilers:',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   ..._metaData!['trailers'].map<Widget>(
                     (trailer) => ListTile(
                       leading: const Icon(Icons.play_arrow),
-                      title: const Text('Trailer'),
+                      title: const Text('Tráiler'),
                       onTap: () {
                         // Open YouTube link
                         final url =
@@ -410,7 +413,7 @@ class _DetailsPageViewState extends State<DetailsPageView>
           (BuildContext context, Object error, StackTrace? stackTrace) {
             return const Center(
               child: Text(
-                'Failed to load image.',
+                'No se pudo cargar la imagen.',
                 style: TextStyle(
                   color: Colors.red,
                   fontWeight: FontWeight.bold,
@@ -463,7 +466,7 @@ class _DetailsPageViewState extends State<DetailsPageView>
         setState(() {
           _isPlaying = false;
         });
-        _showError("No streams found.");
+        _showError("No se encontraron streams.");
         return;
       }
       _selectedStreams[id] = addonApi.selectedStreams[id]!;
@@ -485,9 +488,8 @@ class _DetailsPageViewState extends State<DetailsPageView>
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 
   void playURL(String? url) {
@@ -522,7 +524,7 @@ class _QualitySelectorState extends State<QualitySelector> {
     } else if (false) {
       return Center(child: Text('Error: '));
     } else if (!addonProvider.isLoading && addonProvider.streams.isEmpty) {
-      return Center(child: const Text("No streams found."));
+      return Center(child: const Text("No se encontraron streams."));
     } else {
       return Container(
         padding: EdgeInsets.all(16),
@@ -530,7 +532,7 @@ class _QualitySelectorState extends State<QualitySelector> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              "Choose video quality:",
+              "Elige la calidad:",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),

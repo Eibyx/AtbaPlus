@@ -37,12 +37,14 @@ class WebDownloadsTab extends StatelessWidget {
                         child: Column(
                           children: [
                             Text(
-                              'Failed to fetch data: ${data["detail"]}',
+                              'No se pudieron cargar los datos: ${data["detail"]}',
                               style: const TextStyle(color: Colors.red),
                             ),
                             data["stackTrace"] != null
                                 ? ElevatedButton(
-                                    child: const Text('Copy stack trace'),
+                                    child: const Text(
+                                      'Copiar detalles del error',
+                                    ),
                                     onPressed: () {
                                       Clipboard.setData(
                                         ClipboardData(
@@ -53,9 +55,7 @@ class WebDownloadsTab extends StatelessWidget {
                                         context,
                                       ).showSnackBar(
                                         const SnackBar(
-                                          content: Text(
-                                            'Stack trace copied to clipboard',
-                                          ),
+                                          content: Text('Detalles copiados'),
                                         ),
                                       );
                                     },
@@ -80,7 +80,7 @@ class WebDownloadsTab extends StatelessWidget {
                             );
                           },
                         )
-                      : const Center(child: Text('No web downloads available'));
+                      : const Center(child: Text('No hay descargas web'));
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else {

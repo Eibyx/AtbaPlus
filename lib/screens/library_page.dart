@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:atba/l10n.dart';
+
 import 'package:atba/models/library_items/queued_torrent.dart';
 import 'package:atba/models/widgets/downloads_prompt.dart';
 import 'package:atba/screens/jobs_status_page.dart';
@@ -96,8 +98,8 @@ class _LibraryPageState extends State<LibraryPage>
                   ),
                   child: Text(
                     state.isSelecting
-                        ? "${state.selectedItems.length} selected"
-                        : 'Library',
+                        ? "${state.selectedItems.length} seleccionados"
+                        : 'Biblioteca',
                     key: ValueKey(
                       state.isSelecting
                           ? 'sel${state.selectedItems.length}'
@@ -230,7 +232,7 @@ class _LibraryPageState extends State<LibraryPage>
                                                 .showSnackBar(
                                                   const SnackBar(
                                                     content: Text(
-                                                      'Permission not granted. Cannot proceed with download.',
+                                                      'Permiso denegado. No se puede descargar.',
                                                     ),
                                                   ),
                                                 );
@@ -292,7 +294,7 @@ class _LibraryPageState extends State<LibraryPage>
                               return [
                                 SpeedDialChild(
                                   child: const Icon(Icons.cloud_download),
-                                  label: 'Web link',
+                                  label: 'Enlace web',
                                   onTap: () {
                                     Navigator.push(
                                       context,
@@ -310,7 +312,7 @@ class _LibraryPageState extends State<LibraryPage>
                               return [
                                 SpeedDialChild(
                                   child: const Icon(Icons.link),
-                                  label: 'Add NZB from URL',
+                                  label: 'NZB desde URL',
                                   onTap: () {
                                     Navigator.push(
                                       context,
@@ -322,7 +324,7 @@ class _LibraryPageState extends State<LibraryPage>
                                 ),
                                 SpeedDialChild(
                                   child: const Icon(Icons.upload_file),
-                                  label: 'Add NZB from file',
+                                  label: 'NZB desde archivo',
                                   onTap: () {
                                     Navigator.push(
                                       context,
@@ -351,7 +353,7 @@ class _LibraryPageState extends State<LibraryPage>
                               return [
                                 SpeedDialChild(
                                   child: const Icon(Icons.upload_file),
-                                  label: '.torrent file',
+                                  label: 'Archivo .torrent',
                                   onTap: () {
                                     Navigator.push(
                                       context,
@@ -426,7 +428,7 @@ class _LibraryPageState extends State<LibraryPage>
       icon: state.isTorrentNamesCensored
           ? Icon(Icons.visibility)
           : Icon(Icons.visibility_off),
-      tooltip: "Blur names",
+      tooltip: "Difuminar nombres",
       onPressed: () {
         state.toggleTorrentNamesCensoring();
       },
@@ -436,7 +438,7 @@ class _LibraryPageState extends State<LibraryPage>
   IconButton buildFilterIcon(BuildContext context) {
     return IconButton(
       icon: const Icon(Icons.filter_list),
-      tooltip: 'Filter',
+      tooltip: 'Filtrar',
       onPressed: () => _showFilterBottomSheet(context),
     );
   }
@@ -454,7 +456,7 @@ class _LibraryPageState extends State<LibraryPage>
                   controlller.open();
                 }
               },
-              tooltip: "Sort downloads",
+              tooltip: "Ordenar",
             );
           },
       menuChildren: List<MenuItemButton>.generate(
@@ -468,7 +470,7 @@ class _LibraryPageState extends State<LibraryPage>
           },
           child: Row(
             children: [
-              Text(LibraryPageState.sortingOptions.keys.elementAt(index)),
+              Text(tr(LibraryPageState.sortingOptions.keys.elementAt(index))),
               if (state.selectedSortingOption ==
                   LibraryPageState.sortingOptions.keys.elementAt(index))
                 Row(
@@ -493,14 +495,14 @@ class _LibraryPageState extends State<LibraryPage>
       onPressed: () {
         state.toggleSearch();
       },
-      tooltip: "Search",
+      tooltip: "Buscar",
     );
   }
 
   IconButton buildRefreshIcon(LibraryPageState state) {
     return IconButton(
       icon: const Icon(Icons.refresh_rounded),
-      tooltip: "Refresh",
+      tooltip: "Actualizar",
       onPressed: () {
         state.torrentRefreshIndicatorKey.currentState?.show();
         state.webRefreshIndicatorKey.currentState?.show();
@@ -518,7 +520,7 @@ class _LibraryPageState extends State<LibraryPage>
           MaterialPageRoute(builder: (context) => const JobsStatusPage()),
         );
       },
-      tooltip: "Jobs Status",
+      tooltip: "Trabajos de integración",
     );
   }
 
@@ -567,7 +569,7 @@ class _LibraryPageState extends State<LibraryPage>
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const ListTile(title: Text('Main')),
+                        const ListTile(title: Text('Principal')),
                         _buildMainFilters(context, setState),
                         // const ListTile(title: Text("Qualities")),
                         // _buildQualityFilters(context, setState),
@@ -590,7 +592,7 @@ class _LibraryPageState extends State<LibraryPage>
           spacing: 8.0,
           children: LibraryPageState.filters.keys.map((filter) {
             return FilterChip(
-              label: Text(filter, style: const TextStyle(fontSize: 12)),
+              label: Text(tr(filter), style: const TextStyle(fontSize: 12)),
               selected: state.selectedMainFilters.contains(filter),
               onSelected: (selected) {
                 setState(() {

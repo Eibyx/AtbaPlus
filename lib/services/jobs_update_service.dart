@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+
 import 'package:atba/models/torbox_api_response.dart';
 import 'package:atba/services/torbox_service.dart';
 

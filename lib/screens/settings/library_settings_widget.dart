@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:atba/l10n.dart';
+
 import 'package:atba/config/constants.dart';
 import 'package:atba/models/widgets/multi_value_change_observer.dart';
 import 'package:flutter/material.dart';
@@ -30,18 +32,18 @@ class _LibrarySettingsTileState extends State<LibrarySettingsTile> {
   @override
   Widget build(BuildContext context) {
     return SimpleSettingsTile(
-      title: "Library",
+      title: "Biblioteca",
       leading: Icon(Icons.library_books),
       child: SettingsScreen(
-        title: "Library settings",
+        title: "Biblioteca",
         children: <Widget>[
           CheckboxSettingsTile(
-            title: "Update items in the foreground",
+            title: "Actualizar elementos en primer plano",
             settingKey: Constants.libraryForegroundUpdate,
             defaultValue: true,
             childrenIfEnabled: <Widget>[
               CheckboxSettingsTile(
-                title: "Show update animation",
+                title: "Mostrar animación al actualizar",
                 settingKey: Constants.libraryForegroundUpdateAnimation,
                 defaultValue: true,
               ),
@@ -49,17 +51,17 @@ class _LibrarySettingsTileState extends State<LibrarySettingsTile> {
           ),
           CheckboxSettingsTile(
             settingKey: Constants.useTorrentNameParsing,
-            title: 'Use torrent name parsing',
+            title: 'Limpiar nombres de torrents',
             defaultValue: true,
           ),
           CheckboxSettingsTile(
             settingKey: Constants.loadUncachedLibraryOnStart,
-            title: 'Bypass cache on initial startup',
+            title: 'Ignorar caché al iniciar',
             defaultValue: true,
           ),
           ExpandableSettingsTile(
-            title: "Icons",
-            subtitle: "Reorder and disable icons from the top bar",
+            title: "Iconos",
+            subtitle: "Ordena y oculta los iconos de la barra superior",
             children: [
               MultiValueChangeObserver(
                 cacheKeysWithDefaultValues: LibrarySettingsTile.valueMaps,
@@ -78,7 +80,7 @@ class _LibrarySettingsTileState extends State<LibrarySettingsTile> {
                           for (final key in valuesOrder)
                             ListTile(
                               key: Key("$key"),
-                              title: Text(key),
+                              title: Text(tr(key)),
                               leading: LibraryIcons.fromString(key).icon,
                               trailing: Checkbox(
                                 value: mappedValues[key],

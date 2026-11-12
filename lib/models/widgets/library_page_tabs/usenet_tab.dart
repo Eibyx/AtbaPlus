@@ -38,12 +38,14 @@ class UsenetTab extends StatelessWidget {
                         child: Column(
                           children: [
                             Text(
-                              'Failed to fetch data: ${data["detail"]}',
+                              'No se pudieron cargar los datos: ${data["detail"]}',
                               style: const TextStyle(color: Colors.red),
                             ),
                             data["stackTrace"] != null
                                 ? ElevatedButton(
-                                    child: const Text('Copy stack trace'),
+                                    child: const Text(
+                                      'Copiar detalles del error',
+                                    ),
                                     onPressed: () {
                                       Clipboard.setData(
                                         ClipboardData(
@@ -54,9 +56,7 @@ class UsenetTab extends StatelessWidget {
                                         context,
                                       ).showSnackBar(
                                         const SnackBar(
-                                          content: Text(
-                                            'Stack trace copied to clipboard',
-                                          ),
+                                          content: Text('Detalles copiados'),
                                         ),
                                       );
                                     },
@@ -82,9 +82,7 @@ class UsenetTab extends StatelessWidget {
                             );
                           },
                         )
-                      : const Center(
-                          child: Text('No usenet downloads available'),
-                        );
+                      : const Center(child: Text('No hay descargas Usenet'));
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else {

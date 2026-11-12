@@ -60,7 +60,7 @@ class _AsyncSectionState<T> extends State<AsyncSection<T>> {
             snap.data!.data == null) {
           final msg = snap.hasError
               ? describeError(snap.error!)
-              : (snap.data?.detail ?? 'Unavailable');
+              : (snap.data?.detail ?? 'No disponible');
           child = SurfaceCard(
             key: const ValueKey('error'),
             child: Row(
@@ -97,12 +97,12 @@ class _AsyncSectionState<T> extends State<AsyncSection<T>> {
 class AccountPage extends StatelessWidget {
   const AccountPage({super.key});
 
-  static const _plans = {0: 'Free', 1: 'Essential', 2: 'Pro', 3: 'Standard'};
+  static const _plans = {0: 'Gratis', 1: 'Essential', 2: 'Pro', 3: 'Standard'};
 
   @override
   Widget build(BuildContext context) {
     return ApiLoader<UserData>(
-      title: 'Account',
+      title: 'Cuenta',
       load: (api) => api.user.getUserData(),
       builder: (context, user, reload) {
         final scheme = Theme.of(context).colorScheme;
@@ -122,28 +122,28 @@ class AccountPage extends StatelessWidget {
                       value: _plans[user.plan] ?? 'Plan ${user.plan}',
                     ),
                     InfoRow(
-                      label: 'Subscribed',
-                      value: (user.isSubscribed ?? false) ? 'Yes' : 'No',
+                      label: 'Suscrito',
+                      value: (user.isSubscribed ?? false) ? 'Sí' : 'No',
                     ),
                     InfoRow(
-                      label: 'Premium until',
+                      label: 'Premium hasta',
                       value: formatDate(user.premiumExpiresAt),
                     ),
                     if (user.cooldownUntil != null)
                       InfoRow(
-                        label: 'Cooldown until',
+                        label: 'En espera hasta',
                         value: formatDate(user.cooldownUntil),
                       ),
                     InfoRow(
-                      label: 'Member since',
+                      label: 'Miembro desde',
                       value: formatDate(user.createdAt, withTime: false),
                     ),
                     InfoRow(
-                      label: 'Extra slots',
+                      label: 'Slots extra',
                       value: '${user.additionalConcurrentSlots ?? 0}',
                     ),
                     InfoRow(
-                      label: 'User ID',
+                      label: 'ID de usuario',
                       value: '${user.id}',
                       copyable: true,
                     ),
@@ -152,21 +152,19 @@ class AccountPage extends StatelessWidget {
               ),
             ),
           ),
-          const SliverToBoxAdapter(
-            child: SectionHeader(title: 'Lifetime usage'),
-          ),
+          const SliverToBoxAdapter(child: SectionHeader(title: 'Uso total')),
           StatGrid(
             tiles: [
               StatTile(
                 index: 1,
-                label: 'Downloaded',
+                label: 'Descargado',
                 value: getReadableSize(user.totalBytesDownloaded ?? 0),
                 icon: Icons.south_rounded,
                 color: const Color(0xFF60A5FA),
               ),
               StatTile(
                 index: 2,
-                label: 'Uploaded',
+                label: 'Subido',
                 value: getReadableSize(user.totalBytesUploaded ?? 0),
                 icon: Icons.north_rounded,
                 color: const Color(0xFF34D399),
@@ -189,7 +187,7 @@ class AccountPage extends StatelessWidget {
             ],
           ),
           const SliverToBoxAdapter(
-            child: SectionHeader(title: 'Bandwidth (last 30 days)'),
+            child: SectionHeader(title: 'Consumo (últimos 30 días)'),
           ),
           SliverToBoxAdapter(
             child: AsyncSection<UserStatsData>(
@@ -205,7 +203,7 @@ class AccountPage extends StatelessWidget {
               ),
             ),
           ),
-          const SliverToBoxAdapter(child: SectionHeader(title: 'Referrals')),
+          const SliverToBoxAdapter(child: SectionHeader(title: 'Referidos')),
           SliverToBoxAdapter(
             child: AsyncSection<ReferralData>(
               load: (api) => api.user.getReferralData(),
@@ -213,16 +211,16 @@ class AccountPage extends StatelessWidget {
                 child: Column(
                   children: [
                     InfoRow(
-                      label: 'Your code',
+                      label: 'Tu código',
                       value: r.referralCode,
                       copyable: true,
                     ),
                     InfoRow(
-                      label: 'Referred accounts',
+                      label: 'Cuentas referidas',
                       value: '${r.referredAccounts}',
                     ),
                     InfoRow(
-                      label: 'Purchases referred',
+                      label: 'Compras referidas',
                       value: '${r.purchasesReferred}',
                     ),
                     const SizedBox(height: 8),
@@ -231,7 +229,7 @@ class AccountPage extends StatelessWidget {
                       child: OutlinedButton.icon(
                         onPressed: () => _addReferral(context),
                         icon: const Icon(Icons.card_giftcard_rounded),
-                        label: const Text('Use a referral code'),
+                        label: const Text('Usar un código de referido'),
                       ),
                     ),
                   ],
@@ -240,13 +238,13 @@ class AccountPage extends StatelessWidget {
             ),
           ),
           const SliverToBoxAdapter(
-            child: SectionHeader(title: 'Subscriptions'),
+            child: SectionHeader(title: 'Suscripciones'),
           ),
           SliverToBoxAdapter(
             child: AsyncSection<List<UserSubscription>>(
               load: (api) => api.user.getSubscriptions(),
               builder: (context, subs) => subs.isEmpty
-                  ? const SurfaceCard(child: Text('No subscriptions'))
+                  ? const SurfaceCard(child: Text('Sin suscripciones'))
                   : Column(
                       children: [
                         for (final s in subs)
@@ -291,12 +289,14 @@ class AccountPage extends StatelessWidget {
                     ),
             ),
           ),
-          const SliverToBoxAdapter(child: SectionHeader(title: 'Transactions')),
+          const SliverToBoxAdapter(
+            child: SectionHeader(title: 'Transacciones'),
+          ),
           SliverToBoxAdapter(
             child: AsyncSection<List<UserTransaction>>(
               load: (api) => api.user.getTransactions(),
               builder: (context, txs) => txs.isEmpty
-                  ? const SurfaceCard(child: Text('No transactions'))
+                  ? const SurfaceCard(child: Text('Sin transacciones'))
                   : Column(
                       children: [
                         for (final (i, t) in txs.indexed)
@@ -355,19 +355,19 @@ class AccountPage extends StatelessWidget {
                     ),
             ),
           ),
-          const SliverToBoxAdapter(child: SectionHeader(title: 'Security')),
+          const SliverToBoxAdapter(child: SectionHeader(title: 'Seguridad')),
           SliverToBoxAdapter(
             child: SurfaceCard(
               onTap: () => runApiAction(
                 context,
                 (api) => api.user.getConfirmation(),
-                successMessage: 'Confirmation code sent to your email',
+                successMessage: 'Código enviado a tu correo',
               ),
               child: const Row(
                 children: [
                   Icon(Icons.mark_email_read_rounded),
                   SizedBox(width: 14),
-                  Expanded(child: Text('Email me a confirmation code')),
+                  Expanded(child: Text('Enviarme un código de confirmación')),
                   Icon(Icons.chevron_right_rounded),
                 ],
               ),
@@ -382,14 +382,14 @@ class AccountPage extends StatelessWidget {
     final controller = TextEditingController();
     await showToolSheet<void>(
       context,
-      title: 'Use a referral code',
+      title: 'Usar un código de referido',
       builder: (sheetContext) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           TextField(
             controller: controller,
             autofocus: true,
-            decoration: const InputDecoration(labelText: 'Referral code'),
+            decoration: const InputDecoration(labelText: 'Código de referido'),
           ),
           const SizedBox(height: 16),
           FilledButton(
@@ -399,13 +399,13 @@ class AccountPage extends StatelessWidget {
               final ok = await runApiAction(
                 context,
                 (api) => api.user.addReferral(code),
-                successMessage: 'Referral code added',
+                successMessage: 'Código de referido aplicado',
               );
               if (ok != null && sheetContext.mounted) {
                 Navigator.pop(sheetContext);
               }
             },
-            child: const Text('Apply'),
+            child: const Text('Aplicar'),
           ),
         ],
       ),
@@ -415,7 +415,7 @@ class AccountPage extends StatelessWidget {
   Future<void> _downloadReceipt(BuildContext context, UserTransaction t) async {
     final api = torboxApiOf(context);
     if (api == null) return;
-    showToast(context, 'Downloading receipt…');
+    showToast(context, 'Descargando recibo…');
     try {
       final dir = await getApplicationDocumentsDirectory();
       final path = await api.user.downloadTransactionPdf(
@@ -424,7 +424,7 @@ class AccountPage extends StatelessWidget {
             '${dir.path}${Platform.pathSeparator}torbox-${t.transactionId}.pdf',
       );
       if (context.mounted) {
-        showToast(context, 'Receipt saved', type: ToastType.success);
+        showToast(context, 'Recibo guardado', type: ToastType.success);
       }
       await OpenFile.open(path);
     } catch (e) {
@@ -478,7 +478,7 @@ class _BandwidthChart extends StatelessWidget {
           SizedBox(
             height: 110,
             child: data.isEmpty
-                ? const Center(child: Text('No data yet'))
+                ? const Center(child: Text('Aún no hay datos'))
                 : Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [

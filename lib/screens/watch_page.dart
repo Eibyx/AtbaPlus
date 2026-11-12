@@ -15,7 +15,7 @@ class _WatchPageState extends State<WatchPage>
   late TabController _tabController;
 
   final List<Tab> _tabTypes = const [
-    Tab(text: 'Movies'),
+    Tab(text: 'Películas'),
     Tab(text: 'Series'),
   ];
 
@@ -31,11 +31,8 @@ class _WatchPageState extends State<WatchPage>
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Watch'),
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: _tabTypes,
-        ),
+        title: const Text('Ver'),
+        bottom: TabBar(controller: _tabController, tabs: _tabTypes),
       ),
       body: Column(
         children: [
@@ -57,11 +54,13 @@ class _WatchPageState extends State<WatchPage>
                     if (api.searchResults["movie"]!.isEmpty &&
                         api.searchResults["series"]!.isEmpty &&
                         api.hasSearched) {
-                      return const Center(child: Text("No results found"));
+                      return const Center(child: Text("Sin resultados"));
                     }
 
                     if (!api.hasSearched) {
-                      return const Center(child: Text("Press enter to search"));
+                      return const Center(
+                        child: Text("Pulsa Intro para buscar"),
+                      );
                     }
                     final String searchType;
                     switch (tab.text!.toLowerCase()) {
@@ -79,8 +78,9 @@ class _WatchPageState extends State<WatchPage>
                     return GridView.builder(
                       padding: const EdgeInsets.all(8),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount:
-                            MediaQuery.of(context).size.width > 600 ? 3 : 2,
+                        crossAxisCount: MediaQuery.of(context).size.width > 600
+                            ? 3
+                            : 2,
                         childAspectRatio: 0.7,
                         crossAxisSpacing: 8,
                         mainAxisSpacing: 0,
@@ -96,9 +96,10 @@ class _WatchPageState extends State<WatchPage>
                               context,
                               MaterialPageRoute(
                                 builder: (context) => DetailsPage(
-                                    title: item["name"],
-                                    type: searchType,
-                                    id: item["id"]),
+                                  title: item["name"],
+                                  type: searchType,
+                                  id: item["id"],
+                                ),
                               ),
                             );
                           },
@@ -135,7 +136,7 @@ class _SearchBarState extends State<SearchBar> {
       child: TextField(
         controller: _controller,
         decoration: InputDecoration(
-          hintText: 'Search...',
+          hintText: 'Buscar…',
           prefixIcon: const Icon(Icons.search),
         ),
         onSubmitted: (query) {
@@ -166,9 +167,7 @@ class MovieCard extends StatelessWidget {
       color: Theme.of(context).colorScheme.secondaryContainer,
       margin: const EdgeInsets.symmetric(vertical: 8),
       elevation: 3,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(4),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(4),
@@ -197,8 +196,10 @@ class MovieCard extends StatelessWidget {
                 width: double.infinity,
                 height: 200,
                 color: Colors.grey[300],
-                child: const Icon(Icons.image_not_supported,
-                    color: Colors.white70),
+                child: const Icon(
+                  Icons.image_not_supported,
+                  color: Colors.white70,
+                ),
               ),
             // Title
             Padding(

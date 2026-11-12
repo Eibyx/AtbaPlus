@@ -24,20 +24,20 @@ class _PermissionScreenState extends State<PermissionScreen> {
     final List<Map<String, dynamic>> permissions = [
       {
         'icon': Icons.folder,
-        'title': 'Storage Access',
-        'description': 'Access your storage to save and retrieve files.',
+        'title': 'Acceso al almacenamiento',
+        'description': 'Para guardar y abrir archivos descargados.',
         'permission': Permission.storage,
       },
       {
         'icon': Icons.notifications,
-        'title': 'Notifications',
-        'description': 'Receive notifications about your downloads.',
+        'title': 'Notificaciones',
+        'description': 'Para avisarte del estado de tus descargas.',
         'permission': Permission.notification,
       },
     ];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Permissions')),
+      appBar: AppBar(title: const Text('Permisos')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -87,14 +87,14 @@ class _PermissionScreenState extends State<PermissionScreen> {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                       content: Text(
-                                        'No folder was selected. You can continue without granting storage.',
+                                        'No elegiste carpeta. Puedes continuar sin dar acceso.',
                                       ),
                                     ),
                                   );
                                 }
                               }
                             },
-                            child: Text('Grant'),
+                            child: Text('Permitir'),
                           ),
                   ],
                 ),
@@ -107,7 +107,7 @@ class _PermissionScreenState extends State<PermissionScreen> {
                   MaterialPageRoute(builder: (context) => const HomeScreen()),
                 );
               },
-              child: const Text('Continue'),
+              child: const Text('Continuar'),
             ),
           ],
         ),

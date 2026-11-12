@@ -18,7 +18,7 @@ class _HostersPageState extends State<HostersPage> {
   @override
   Widget build(BuildContext context) {
     return ApiLoader<List<HosterData>>(
-      title: 'Supported hosters',
+      title: 'Servidores compatibles',
       load: (api) => api.webDownloads.getHosters(),
       isEmpty: (d) => d.isEmpty,
       builder: (context, hosters, reload) {
@@ -44,7 +44,7 @@ class _HostersPageState extends State<HostersPage> {
               child: TextField(
                 onChanged: (v) => setState(() => _query = v),
                 decoration: const InputDecoration(
-                  hintText: 'Search hosters or domains',
+                  hintText: 'Buscar servidor o dominio',
                   prefixIcon: Icon(Icons.search_rounded),
                 ),
               ),
@@ -56,12 +56,12 @@ class _HostersPageState extends State<HostersPage> {
               child: Row(
                 children: [
                   Text(
-                    '$online of ${hosters.length} online',
+                    '$online de ${hosters.length} en línea',
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                   const Spacer(),
                   FilterChip(
-                    label: const Text('Online only'),
+                    label: const Text('Solo en línea'),
                     selected: _onlineOnly,
                     showCheckmark: false,
                     onSelected: (v) => setState(() => _onlineOnly = v),
@@ -142,7 +142,7 @@ class _HosterCardState extends State<_HosterCard> {
                   ),
                 ),
                 StatusPill(
-                  label: h.status ? 'Online' : 'Offline',
+                  label: h.status ? 'En línea' : 'Caído',
                   color: statusColor,
                 ),
                 AnimatedRotation(
@@ -154,24 +154,24 @@ class _HosterCardState extends State<_HosterCard> {
             ),
             if (_expanded) ...[
               const SizedBox(height: 10),
-              InfoRow(label: 'Type', value: h.type),
+              InfoRow(label: 'Tipo', value: h.type),
               if (h.dailyLinkLimit > 0)
                 InfoRow(
-                  label: 'Daily links',
+                  label: 'Enlaces diarios',
                   value: '${h.dailyLinkUsed} / ${h.dailyLinkLimit}',
                 ),
               if (h.dailyBandwidthLimit > 0)
                 InfoRow(
-                  label: 'Daily bandwidth',
+                  label: 'Ancho de banda diario',
                   value:
                       '${getReadableSize(h.dailyBandwidthUsed)} / ${getReadableSize(h.dailyBandwidthLimit)}',
                 ),
               if (h.perLinkSizeLimit > 0)
                 InfoRow(
-                  label: 'Max file size',
+                  label: 'Tamaño máx.',
                   value: getReadableSize(h.perLinkSizeLimit),
                 ),
-              if (h.nsfw) const InfoRow(label: 'NSFW', value: 'Yes'),
+              if (h.nsfw) const InfoRow(label: 'NSFW', value: 'Sí'),
               if ((h.note ?? '').isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: 6),
